@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace PortSniffer.UI.ScanProperties
+namespace PortSniffer.View.ScanProperties
 {
     public class PropertyTooltip : PictureBox
     {
@@ -17,14 +17,12 @@ namespace PortSniffer.UI.ScanProperties
         public PropertyTooltip(string text)
         {
             this.text = text;
-            
+
+            Size = new Size(14, 14);
             Margin = new Padding(0);
             Dock = DockStyle.Left;
             SizeMode = PictureBoxSizeMode.Zoom;
             Image = Resources.HelpIcon.ToBitmap();
-            Size = new Size(14,14);
-
-            //BackColor = Color.RebeccaPurple;
 
             toolTip = new ToolTip();
             MouseEnter += ShowTooltip;
@@ -34,12 +32,10 @@ namespace PortSniffer.UI.ScanProperties
         private void ShowTooltip(object? sender, EventArgs e)
         {
             Point mouse = PointToClient(Cursor.Position);
-
             toolTip.Show(text, this, new Point(mouse.X, mouse.Y + OFFSET_Y));
-
         }
 
-        private void HideToolTip(object? sender, EventArgs e) 
+        private void HideToolTip(object? sender, EventArgs e)
         {
             toolTip.Hide(this);
         }

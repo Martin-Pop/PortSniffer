@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace PortSniffer.UI.ScanProperties
+namespace PortSniffer.View.ScanProperties
 {
     public class PropertyTextInput : TextBox
     {

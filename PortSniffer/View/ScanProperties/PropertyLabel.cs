@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PortSniffer.UI.ScanProperties
+namespace PortSniffer.View.ScanProperties
 {
     public class PropertyLabel : Label
     {
-        public PropertyLabel(string text) 
+        public PropertyLabel(string text)
         {
             Text = text;
             Font = new Font("Consolas", 12F, FontStyle.Regular);

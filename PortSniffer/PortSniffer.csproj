@@ -15,8 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Interface\" />
-    <Folder Include="Util\" />
+    <Folder Include="Core\Interface\" />
+    <Folder Include="Model\" />
   </ItemGroup>
 
   <ItemGroup>

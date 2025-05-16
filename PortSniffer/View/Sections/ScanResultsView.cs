@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PortSniffer.UI.Controls
+namespace PortSniffer.View.Sections
 {
-    public class GeneralControls : Panel
+    public class ScanResultsView : Panel
     {
 
-       
+
     }
 }

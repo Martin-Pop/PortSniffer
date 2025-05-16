@@ -4,19 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PortSniffer.UI
+namespace PortSniffer.View.Sections
 {
-    public class OutputPanel : Panel
+    public class OutputConsoleView : Panel
     {
         private RichTextBox ouputConsole;
-        public OutputPanel() 
+        public OutputConsoleView()
         {
-            this.Dock = DockStyle.Fill;
+            Dock = DockStyle.Fill;
 
             ouputConsole = new RichTextBox();
             ouputConsole.Dock = DockStyle.Fill;
-            
-            this.Controls.Add(ouputConsole);
+
+            Controls.Add(ouputConsole);
         }
     }
 }
