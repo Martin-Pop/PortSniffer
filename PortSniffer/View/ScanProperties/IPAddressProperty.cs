@@ -14,7 +14,7 @@ namespace PortSniffer.View.ScanProperties
     {
         public IPAddress IpAddress { get; set; } = IPAddress.None;
         public event EventHandler? ValidationEvent;
-        public IPAddressProperty(PropertyLabel pl, PropertyTooltip tp, Control c) : base(pl, tp, c)
+        public IPAddressProperty(PropertyLabel pl, PropertyTooltip tp, Control c, bool required) : base(pl, tp, c, required)
         {
             Input = (PropertyTextInput) Input;
 
@@ -30,8 +30,9 @@ namespace PortSniffer.View.ScanProperties
             {
                 e.Handled = true;
                 e.SuppressKeyPress = true;
+                
 
-                label.Focus(); //lose focus so that the event is triggered
+                Label.Focus(); //lose focus so that the event is triggered
             }
         }
 

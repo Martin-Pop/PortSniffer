@@ -19,10 +19,10 @@ namespace PortSniffer.View.ScanProperties
             this.text = text;
 
             Size = new Size(14, 14);
-            Margin = new Padding(0);
-            Dock = DockStyle.Left;
             SizeMode = PictureBoxSizeMode.Zoom;
+            Margin = new Padding(0);
             Image = Resources.HelpIcon.ToBitmap();
+            Dock = DockStyle.Left;
 
             toolTip = new ToolTip();
             MouseEnter += ShowTooltip;

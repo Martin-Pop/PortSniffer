@@ -1,6 +1,4 @@
-using PortSniffer.Models;
 using PortSniffer.Presenter;
-
 //using PortSniffer.UI;
 using PortSniffer.View;
 using PortSniffer.View.Sections;

@@ -11,8 +11,10 @@ namespace PortSniffer.View.ScanProperties
         public PropertyLabel(string text)
         {
             Text = text;
-            Font = new Font("Consolas", 12F, FontStyle.Regular);
+            Font = new Font("Consolas", 11F, FontStyle.Regular);
             TextAlign = ContentAlignment.MiddleLeft;
+            AutoSize = true;
+            Dock = DockStyle.Left;
         }
     }
 }

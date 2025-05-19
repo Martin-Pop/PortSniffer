@@ -1,5 +1,4 @@
 ﻿using PortSniffer.Core.Abstract;
-using PortSniffer.Models;
 using PortSniffer.View.ScanProperties;
 using System;
 using System.Diagnostics;
@@ -13,19 +12,21 @@ namespace PortSniffer.View.Sections
         private Panel bottomPanel;
 
         public IPAddressProperty TargetIP { get; private set; }
+        public IPAddressProperty TargetRangeEnd { get; private set; }
         public ControlPanelView()
         {
 
             Dock = DockStyle.Fill;
-            
+
             scanProperties = new TableLayoutPanel();
-            scanProperties.Dock = DockStyle.Top;
+            scanProperties.Dock = DockStyle.Fill;         
             scanProperties.ColumnCount = 1;
-            scanProperties.RowCount = 10;
+            scanProperties.RowCount = 50;
             scanProperties.AutoScroll = true;
-            scanProperties.AutoSize = true;
+            scanProperties.AutoSize = false;
 
             bottomPanel = new Panel();
+            bottomPanel.BackColor = Color.LightBlue;
             bottomPanel.Dock = DockStyle.Bottom;
 
             InitializeControls();
@@ -36,12 +37,28 @@ namespace PortSniffer.View.Sections
 
         public void InitializeControls()
         {
-            //IP ADDRESS TARGET
+            //TARGET IP
             PropertyLabel targetLabel = new PropertyLabel("Target IP:");
-            PropertyTooltip targetHelp = new PropertyTooltip("Type in your target IPv4 address");
+            PropertyTooltip targetHelp = new PropertyTooltip("Required. Acts as the single IP to scan, or the start of a range (if 'Target IP Range End' is set), or the base address for subnet scanning (if Subnet Mask is provided).");
             PropertyTextInput targetTextbox = new PropertyTextInput("192.168.0.1");
-            //IPAddressProperty targetIP = new IPAddressProperty(targetLabel, targetHelp, targetTextbox);
-            TargetIP = new IPAddressProperty(targetLabel, targetHelp, targetTextbox);
+            TargetIP = new IPAddressProperty(targetLabel, targetHelp, targetTextbox, true);
+
+            //TARGET IP RANGE END
+            PropertyLabel targetRangeLabel = new PropertyLabel("Target IP Range End:");
+            PropertyTooltip targetRangeHelp = new PropertyTooltip("Optional. Acts as the end of a range to scan, or the base address for subnet scanning (if Subnet Mask is provided).");
+            PropertyTextInput targetRangeInput = new PropertyTextInput();
+            TargetRangeEnd = new IPAddressProperty(targetRangeLabel, targetRangeHelp, targetRangeInput, false);
+
+            //just for testing for now
+            for (int i = 0; i < 15; i++)
+            {
+                PropertyLabel l = new PropertyLabel($"Test {i}");
+                PropertyTooltip p = new PropertyTooltip("Required. Acts as the single IP to scan, or the start of a range (if 'Target IP Range End' is set), or the base address for subnet scanning (if Subnet Mask is provided).");
+                PropertyTextInput t = new PropertyTextInput();
+                IPAddressProperty test = new IPAddressProperty(l, p, t, true);
+
+                scanProperties.Controls.Add(test);
+            }
 
             Button startButton = new Button();
             startButton.Text = "Start Scan";
@@ -51,6 +68,7 @@ namespace PortSniffer.View.Sections
             bottomPanel.Controls.Add(startButton);
 
             scanProperties.Controls.Add(TargetIP);
+            scanProperties.Controls.Add(TargetRangeEnd);
 
             Debug.WriteLine("Initialized Control panel  ");
         }
@@ -64,19 +82,6 @@ namespace PortSniffer.View.Sections
             //TODO: make this blink
             property.Input.BackColor = Color.FromArgb(255, 222, 222);
         }
-
-
-        /*
-        /// <summary>
-        /// Resets the color of the control to indicate no validation error.
-        /// </summary>
-        /// <param name="property">Control that gets visual changes</param>
-        public void ResetValidationError(ScanPropertyAbstract property)
-        {
-            property.BackColor = Color.White;
-        }
-        */
-
     }
 
 

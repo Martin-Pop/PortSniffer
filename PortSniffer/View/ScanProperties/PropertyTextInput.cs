@@ -24,7 +24,7 @@ namespace PortSniffer.View.ScanProperties
 
         private void Initialize()
         {
-            Font = new Font("Consolas", 12F, FontStyle.Regular);
+            Font = new Font("Consolas", 11F, FontStyle.Regular);
             Multiline = false;
         }
     }
