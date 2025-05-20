@@ -36,5 +36,12 @@ namespace PortSniffer.View.ScanProperties
             }
         }
 
+        public override void Reset()
+        {
+            IsValid = false;
+            IpAddress = IPAddress.None;
+            Input.Text = string.Empty;
+            Input.BackColor = Color.White;
+        }
     }
 }

@@ -48,5 +48,10 @@ namespace PortSniffer.Core.Abstract
             Controls.Add(Input);
             Controls.Add(labelPanel);
         }
+
+        /// <summary>
+        /// Reset the property to its default state.
+        /// </summary>
+        public abstract void Reset();
     }
 }

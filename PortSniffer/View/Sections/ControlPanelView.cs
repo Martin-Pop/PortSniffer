@@ -12,7 +12,8 @@ namespace PortSniffer.View.Sections
         private Panel bottomPanel;
 
         public IPAddressProperty TargetIP { get; private set; }
-        public IPAddressProperty TargetRangeEnd { get; private set; }
+        public IPAddressProperty TargetIPRangeEnd { get; private set; }
+        public IPAddressProperty SubentMask { get; private set; }
         public ControlPanelView()
         {
 
@@ -45,20 +46,26 @@ namespace PortSniffer.View.Sections
 
             //TARGET IP RANGE END
             PropertyLabel targetRangeLabel = new PropertyLabel("Target IP Range End:");
-            PropertyTooltip targetRangeHelp = new PropertyTooltip("Optional. Acts as the end of a range to scan, or the base address for subnet scanning (if Subnet Mask is provided).");
+            PropertyTooltip targetRangeHelp = new PropertyTooltip("Optional. Acts as the end of a range to scan.");
             PropertyTextInput targetRangeInput = new PropertyTextInput();
-            TargetRangeEnd = new IPAddressProperty(targetRangeLabel, targetRangeHelp, targetRangeInput, false);
+            TargetIPRangeEnd = new IPAddressProperty(targetRangeLabel, targetRangeHelp, targetRangeInput, false);
+
+            //SUBNET MASK
+            PropertyLabel maskLabel = new PropertyLabel("Subnet mask:");
+            PropertyTooltip maskHelp = new PropertyTooltip("Optional. Subnet mask for your target IP, can be set in CIDR format .");
+            PropertyTextInput maskInput = new PropertyTextInput();
+            SubentMask = new IPAddressProperty(maskLabel, maskHelp, maskInput, false);
 
             //just for testing for now
-            for (int i = 0; i < 15; i++)
-            {
-                PropertyLabel l = new PropertyLabel($"Test {i}");
-                PropertyTooltip p = new PropertyTooltip("Required. Acts as the single IP to scan, or the start of a range (if 'Target IP Range End' is set), or the base address for subnet scanning (if Subnet Mask is provided).");
-                PropertyTextInput t = new PropertyTextInput();
-                IPAddressProperty test = new IPAddressProperty(l, p, t, true);
+            //for (int i = 0; i < 15; i++)
+            //{
+            //    PropertyLabel l = new PropertyLabel($"Test {i}");
+            //    PropertyTooltip p = new PropertyTooltip("Required. Acts as the single IP to scan, or the start of a range (if 'Target IP Range End' is set), or the base address for subnet scanning (if Subnet Mask is provided).");
+            //    PropertyTextInput t = new PropertyTextInput();
+            //    IPAddressProperty test = new IPAddressProperty(l, p, t, true);
 
-                scanProperties.Controls.Add(test);
-            }
+            //    scanProperties.Controls.Add(test);
+            //}
 
             Button startButton = new Button();
             startButton.Text = "Start Scan";
@@ -68,7 +75,8 @@ namespace PortSniffer.View.Sections
             bottomPanel.Controls.Add(startButton);
 
             scanProperties.Controls.Add(TargetIP);
-            scanProperties.Controls.Add(TargetRangeEnd);
+            scanProperties.Controls.Add(TargetIPRangeEnd);
+            scanProperties.Controls.Add(SubentMask);
 
             Debug.WriteLine("Initialized Control panel  ");
         }
@@ -81,6 +89,11 @@ namespace PortSniffer.View.Sections
         {
             //TODO: make this blink
             property.Input.BackColor = Color.FromArgb(255, 222, 222);
+        }
+
+        public void ResetValidationError(ScanPropertyAbstract property)
+        {
+            property.Input.BackColor = Color.White;
         }
     }
 
