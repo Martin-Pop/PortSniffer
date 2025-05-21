@@ -19,15 +19,20 @@ namespace PortSniffer
             Application.EnableVisualStyles();
             
             MainForm mainForm = new MainForm();
-            
-            ControlPanelView controlPanelView = new ControlPanelView();
-            ScanControlsPresenter scanControlsPresenter = new ScanControlsPresenter(controlPanelView);
 
-            Debug.WriteLine("Adding view?");
-            mainForm.AddViews(controlPanelView);
+            OutputConsoleView outputConsoleView = new OutputConsoleView();
+            OutputConsolePresenter outputConsolePresenter = new OutputConsolePresenter(outputConsoleView);
+
+            ControlPanelView controlPanelView = new ControlPanelView();
+            ScanControlsPresenter scanControlsPresenter = new ScanControlsPresenter(controlPanelView, outputConsolePresenter);
+
+            mainForm.AddViews(controlPanelView, outputConsoleView);
 
             Application.Run(mainForm);
 
+            //TODO: make settings and new interface for reaplying settings? => settings form :weary: ?
+            // first load setings if scuccess apply them else apply default, then in console log result
+            
         }
 
        

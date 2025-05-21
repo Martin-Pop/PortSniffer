@@ -1,4 +1,5 @@
-﻿using PortSniffer.Core.Abstract;
+﻿using PortSniffer.View.Abstract;
+using PortSniffer.View.Interface;
 using PortSniffer.View.ScanProperties;
 using System;
 using System.Diagnostics;
@@ -6,17 +7,17 @@ using System.Windows.Forms;
 
 namespace PortSniffer.View.Sections
 {
-    public class ControlPanelView : Panel
+    public class ControlPanelView : Panel, IControlPanelView
     {
         private TableLayoutPanel scanProperties;
         private Panel bottomPanel;
 
         public IPAddressProperty TargetIP { get; private set; }
         public IPAddressProperty TargetIPRangeEnd { get; private set; }
-        public IPAddressProperty SubentMask { get; private set; }
+        public IPAddressProperty SubnetMask { get; private set; }
+
         public ControlPanelView()
         {
-
             Dock = DockStyle.Fill;
 
             scanProperties = new TableLayoutPanel();
@@ -33,28 +34,31 @@ namespace PortSniffer.View.Sections
             InitializeControls();
 
             Controls.Add(scanProperties);
-            Controls.Add(bottomPanel);
+            Controls.Add(bottomPanel);   
         }
 
         public void InitializeControls()
         {
             //TARGET IP
-            PropertyLabel targetLabel = new PropertyLabel("Target IP:");
-            PropertyTooltip targetHelp = new PropertyTooltip("Required. Acts as the single IP to scan, or the start of a range (if 'Target IP Range End' is set), or the base address for subnet scanning (if Subnet Mask is provided).");
-            PropertyTextInput targetTextbox = new PropertyTextInput("192.168.0.1");
-            TargetIP = new IPAddressProperty(targetLabel, targetHelp, targetTextbox, true);
+            TargetIP = new IPAddressProperty(
+                "Target IP:",
+                "Required. Acts as the single IP to scan, or the start of a range, or the base address for subnet scanning.",
+                true
+            );
 
             //TARGET IP RANGE END
-            PropertyLabel targetRangeLabel = new PropertyLabel("Target IP Range End:");
-            PropertyTooltip targetRangeHelp = new PropertyTooltip("Optional. Acts as the end of a range to scan.");
-            PropertyTextInput targetRangeInput = new PropertyTextInput();
-            TargetIPRangeEnd = new IPAddressProperty(targetRangeLabel, targetRangeHelp, targetRangeInput, false);
+            TargetIPRangeEnd = new IPAddressProperty(
+                "Target IP Range End:",
+                "Optional. Acts as the end of a range to scan.",
+                false
+            );
 
             //SUBNET MASK
-            PropertyLabel maskLabel = new PropertyLabel("Subnet mask:");
-            PropertyTooltip maskHelp = new PropertyTooltip("Optional. Subnet mask for your target IP, can be set in CIDR format .");
-            PropertyTextInput maskInput = new PropertyTextInput();
-            SubentMask = new IPAddressProperty(maskLabel, maskHelp, maskInput, false);
+            SubnetMask = new IPAddressProperty(
+                "Subnet mask:",
+                "Optional. Subnet mask for your target IP, can be set in CIDR format .",
+                false
+            );
 
             //just for testing for now
             //for (int i = 0; i < 15; i++)
@@ -76,7 +80,7 @@ namespace PortSniffer.View.Sections
 
             scanProperties.Controls.Add(TargetIP);
             scanProperties.Controls.Add(TargetIPRangeEnd);
-            scanProperties.Controls.Add(SubentMask);
+            scanProperties.Controls.Add(SubnetMask);
 
             Debug.WriteLine("Initialized Control panel  ");
         }
@@ -85,13 +89,17 @@ namespace PortSniffer.View.Sections
         /// Changes the color of the control to indicate a validation error.
         /// </summary>
         /// <param name="property">Control that gets visual changes</param>
-        public void HighlightValidationError(ScanPropertyAbstract property)
+        public void HighlightValidationError(ScanPropertyInputAbstract property)
         {
-            //TODO: make this blink
+            //TODO: make this blink -yeah idk maybe not, just add these colors from config maybe?
             property.Input.BackColor = Color.FromArgb(255, 222, 222);
         }
 
-        public void ResetValidationError(ScanPropertyAbstract property)
+        /// <summary>
+        /// Removes the highlight from the control.
+        /// </summary>
+        /// <param name="property"></param>
+        public void RemoveHighlightValidationError(ScanPropertyInputAbstract property)
         {
             property.Input.BackColor = Color.White;
         }

@@ -39,6 +39,5 @@ namespace PortSniffer.View.ScanProperties
         {
             toolTip.Hide(this);
         }
-
     }
 }

@@ -1,4 +1,6 @@
-﻿using PortSniffer.Model;
+﻿using PortSniffer.Core.Interface;
+using PortSniffer.Model;
+using PortSniffer.View.Interface;
 using PortSniffer.View.ScanProperties;
 using PortSniffer.View.Sections;
 using System;
@@ -15,13 +17,17 @@ namespace PortSniffer.Presenter
 {
     public class ScanControlsPresenter
     {
-        private readonly ControlPanelView controlPanelView;
-        public ScanControlsPresenter(ControlPanelView view) 
+        private readonly IControlPanelView controlPanelView;
+        private readonly IConsoleLogger logger;
+        public ScanControlsPresenter(IControlPanelView view, IConsoleLogger logger) 
         {
+            this.logger = logger;
             controlPanelView = view;
+
+            //events
             controlPanelView.TargetIP.ValidationEvent += OnTargetIPValidation;
             controlPanelView.TargetIPRangeEnd.ValidationEvent += OnTargetIPRangeEndValidation;
-            controlPanelView.SubentMask.ValidationEvent += OnSubnetMaskValidation;
+            controlPanelView.SubnetMask.ValidationEvent += OnSubnetMaskValidation;
         }
 
         //TODO: write errors in the output console
@@ -39,7 +45,7 @@ namespace PortSniffer.Presenter
             }
             else
             {
-                Debug.WriteLine("IP is not valid");
+                logger.Warn("Ip adress is invalid");
                 controlPanelView.HighlightValidationError(controlPanelView.TargetIP);
                 controlPanelView.TargetIP.IsValid = false;
             }
@@ -69,16 +75,16 @@ namespace PortSniffer.Presenter
         /// </summary>
         private void ValidateSubnetMask()
         {
-            if(IPValidator.ValidateSubnetMask(controlPanelView.SubentMask.Input.Text, out IPAddress? mask))
+            if(IPValidator.ValidateSubnetMask(controlPanelView.SubnetMask.Input.Text, out IPAddress? mask))
             {
-                controlPanelView.SubentMask.IpAddress = mask!;
-                controlPanelView.SubentMask.Input.Text = mask!.ToString();
-                controlPanelView.SubentMask.IsValid = true;
+                controlPanelView.SubnetMask.IpAddress = mask!;
+                controlPanelView.SubnetMask.Input.Text = mask!.ToString();
+                controlPanelView.SubnetMask.IsValid = true;
             }else
             {
                 Debug.WriteLine("Subnet mask is not valid");
-                controlPanelView.HighlightValidationError(controlPanelView.SubentMask);
-                controlPanelView.SubentMask.IsValid = false;
+                controlPanelView.HighlightValidationError(controlPanelView.SubnetMask);
+                controlPanelView.SubnetMask.IsValid = false;
             }
         }
         /// <summary>
@@ -100,7 +106,7 @@ namespace PortSniffer.Presenter
                 ValidateIPTarget();
                 if (!string.IsNullOrWhiteSpace(controlPanelView.TargetIPRangeEnd.Input.Text)) //revalidate if there was something
                 {
-                    controlPanelView.ResetValidationError(controlPanelView.TargetIPRangeEnd);
+                    controlPanelView.RemoveHighlightValidationError(controlPanelView.TargetIPRangeEnd);
                     ValidateIPTargetRangeEnd();
                 }
             }
@@ -121,7 +127,7 @@ namespace PortSniffer.Presenter
             else
             {
                 ValidateIPTargetRangeEnd();
-                controlPanelView.SubentMask.Reset();
+                controlPanelView.SubnetMask.Reset();
             }
         }
 
@@ -134,9 +140,9 @@ namespace PortSniffer.Presenter
         /// <param name="e">Event arguments</param>
         private void OnSubnetMaskValidation(object? sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(controlPanelView.SubentMask.Input.Text.Trim()))
+            if (string.IsNullOrEmpty(controlPanelView.SubnetMask.Input.Text.Trim()))
             {
-                controlPanelView.SubentMask.Reset();
+                controlPanelView.SubnetMask.Reset();
             }
             else
             {

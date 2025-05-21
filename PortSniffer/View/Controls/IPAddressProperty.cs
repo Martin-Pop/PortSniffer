@@ -1,4 +1,4 @@
-﻿using PortSniffer.Core.Abstract;
+﻿using PortSniffer.View.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,14 +10,13 @@ using System.Windows.Forms;
 
 namespace PortSniffer.View.ScanProperties
 {
-    public class IPAddressProperty : ScanPropertyAbstract
+    public class IPAddressProperty : ScanPropertyInputAbstract
     {
         public IPAddress IpAddress { get; set; } = IPAddress.None;
         public event EventHandler? ValidationEvent;
-        public IPAddressProperty(PropertyLabel pl, PropertyTooltip tp, Control c, bool required) : base(pl, tp, c, required)
-        {
-            Input = (PropertyTextInput) Input;
 
+        public IPAddressProperty(string label, string toolTipMessage, bool required, string placeholder = "") : base(label, toolTipMessage, required, placeholder)
+        {
             IsValid = false;
             Input.KeyDown += Control_KeyDown;
             Input.LostFocus += (_, _) => ValidationEvent?.Invoke(this, EventArgs.Empty);
