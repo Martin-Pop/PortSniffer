@@ -41,14 +41,19 @@ namespace PortSniffer.View.Sections
 
         public void Write(string msg, Color color)
         {
+            Debug.WriteLine($"Thread: {Thread.CurrentThread.ManagedThreadId}, InvokeRequired: {console.InvokeRequired}");
             console.SelectionStart = console.TextLength;
             console.SelectionLength = 0;
 
             console.SelectionColor = color; 
             console.AppendText(msg + "\n");
-            console.SelectionColor = console.ForeColor; 
+            console.SelectionColor = console.ForeColor;
 
-            console.ScrollToCaret();
+            //hoefully fixes crash if user minimeses the window at before the invoke: pray:
+            if (console.IsHandleCreated)
+            {
+                console.BeginInvoke(new Action(console.ScrollToCaret));
+            }
         }
 
         public void Clear()

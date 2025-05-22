@@ -8,18 +8,20 @@ using System.Threading.Tasks;
 
 namespace PortSniffer.View.Controls
 {
-    public class PortProperty : ScanPropertyInputAbstract
+    public class TimeoutProperty : ScanPropertyInputAbstract
     {
-        public int Port { get; set; } = 0;
+        public int Timeout { get; set; } = 1000;
 
-        public PortProperty(string label, string toolTipMessage, bool required, Settings settings, string placeholder = "") : base(label, toolTipMessage, required, settings, placeholder)
+        public TimeoutProperty(string label, string toolTipMessage, bool required, Settings settings, string placeholder = "") : base(label, toolTipMessage, required, settings, placeholder)
         {
+            IsValid = true;
+            Input.Text = Timeout.ToString();
         }
 
         public override void Reset()
         {
             IsValid = false;
-            Port = 0;
+            Timeout = 0;
 
             Input.Text = string.Empty;
             Input.BackColor = Color.White;

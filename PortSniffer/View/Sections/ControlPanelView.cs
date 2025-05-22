@@ -1,5 +1,6 @@
 ﻿using PortSniffer.Core.Config;
 using PortSniffer.View.Abstract;
+using PortSniffer.View.Controls;
 using PortSniffer.View.Interface;
 using PortSniffer.View.ScanProperties;
 using System;
@@ -16,6 +17,14 @@ namespace PortSniffer.View.Sections
         public IPAddressProperty TargetIP { get; private set; }
         public IPAddressProperty TargetIPRangeEnd { get; private set; }
         public IPAddressProperty SubnetMask { get; private set; }
+
+        public PortProperty PortRangeStart { get; private set; }
+
+        public PortProperty PortRangeEnd { get; private set; }
+
+        public MaxConcurrentProperty MaximumConcurrentScans { get; private set; }
+
+        public TimeoutProperty Timeout { get; private set; }
 
         public ControlPanelView(Settings settings): base(settings)
         {
@@ -50,7 +59,7 @@ namespace PortSniffer.View.Sections
 
             //TARGET IP RANGE END
             TargetIPRangeEnd = new IPAddressProperty(
-                "Target IP Range End:",
+                "Target IP range-end:",
                 "Optional. Acts as the end of a range to scan.",
                 false,
                 Settings
@@ -63,6 +72,39 @@ namespace PortSniffer.View.Sections
                 false,
                 Settings
             );
+
+            //PORT RANGE START/ SINGLE PORT
+            PortRangeStart = new PortProperty(
+                "Port / range-start:",
+                "Optional. Acts as the start of a port range to scan.",
+                true,
+                Settings
+            );
+
+            //PORT RANGE END
+            PortRangeEnd = new PortProperty(
+                "Port range-end:",
+                "Optional. Acts as the end of a port range to scan.",
+                false,
+                Settings
+            );
+
+            //MAXIMUM CONCURRENT SCANS
+            MaximumConcurrentScans = new MaxConcurrentProperty(
+                "Maximum Concurrent Scans:",
+                "Optional. Maximum number of concurrent scans to run, high numbers can trigger firewall.",
+                false,
+                Settings
+            );
+
+            //TIMEOUT
+            Timeout = new TimeoutProperty(
+                "Timeout (ms):",
+                "Optional. Timeout for each scan in miliseconds. ",
+                false,
+                Settings
+            );
+
 
             //just for testing for now
             //for (int i = 0; i < 15; i++)
@@ -85,6 +127,10 @@ namespace PortSniffer.View.Sections
             scanProperties.Controls.Add(TargetIP);
             scanProperties.Controls.Add(TargetIPRangeEnd);
             scanProperties.Controls.Add(SubnetMask);
+            scanProperties.Controls.Add(PortRangeStart);
+            scanProperties.Controls.Add(PortRangeEnd);
+            scanProperties.Controls.Add(MaximumConcurrentScans);
+            scanProperties.Controls.Add(Timeout);
 
             Debug.WriteLine("Initialized Control panel  ");
         }
@@ -108,11 +154,16 @@ namespace PortSniffer.View.Sections
             property.Input.BackColor = Color.White;
         }
 
+        /// <summary>
+        /// Applies settings from the config to the controls.
+        /// </summary>
         public override void ApplySettings()
         {
             TargetIP.ApplySettings();
             TargetIPRangeEnd.ApplySettings();
             SubnetMask.ApplySettings();
+            PortRangeStart.ApplySettings();
+            PortRangeEnd.ApplySettings();
         }
     }
 

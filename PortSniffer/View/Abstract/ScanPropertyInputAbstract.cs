@@ -18,11 +18,11 @@ namespace PortSniffer.View.Abstract
         public TextBox Input { get; protected set; }
         public bool IsValid { get; set; }
         public bool IsRequired { get; init; }
-        
+
+        public event EventHandler? ValidationEvent;
+
         protected ScanPropertyInputAbstract(string label, string toolTipMessage, bool required,Settings settings ,string placeholder = ""): base (settings)
         {
-            //note - some properties are set inside the ApplySettings method of the class that inherits from this.
-
             //this
             AutoSize = true;
             Dock = DockStyle.Fill;
@@ -65,6 +65,29 @@ namespace PortSniffer.View.Abstract
         
             Controls.Add(Input);
             Controls.Add(labelPanel);
+
+            IsValid = false;
+            Input.KeyDown += Control_KeyDown;
+            Input.LostFocus += (_, _) => ValidationEvent?.Invoke(this, EventArgs.Empty);
+            Input.GotFocus += (_, _) => Input.BackColor = Color.White;
+        }
+
+        private void Control_KeyDown(object? sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+
+                Label.Focus(); //lose focus so that the event is triggered
+            }
+        }
+
+        public override void ApplySettings()
+        {
+            Label.Font = new Font(Settings.FontFamily, Settings.FontSize, FontStyle.Regular);
+            Input.Font = new Font(Settings.FontFamily, Settings.FontSize, FontStyle.Regular);
+            RequiredStart.Font = new Font(Settings.FontFamily, Settings.FontSize, FontStyle.Regular);
         }
 
         /// <summary>
