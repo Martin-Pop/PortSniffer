@@ -1,4 +1,5 @@
-﻿using PortSniffer.View.Abstract;
+﻿using PortSniffer.Core.Config;
+using PortSniffer.View.Abstract;
 using PortSniffer.View.Interface;
 using PortSniffer.View.ScanProperties;
 using System;
@@ -7,7 +8,7 @@ using System.Windows.Forms;
 
 namespace PortSniffer.View.Sections
 {
-    public class ControlPanelView : Panel, IControlPanelView
+    public class ControlPanelView : PanelAbstract, IControlPanelView
     {
         private TableLayoutPanel scanProperties;
         private Panel bottomPanel;
@@ -16,7 +17,7 @@ namespace PortSniffer.View.Sections
         public IPAddressProperty TargetIPRangeEnd { get; private set; }
         public IPAddressProperty SubnetMask { get; private set; }
 
-        public ControlPanelView()
+        public ControlPanelView(Settings settings): base(settings)
         {
             Dock = DockStyle.Fill;
 
@@ -43,21 +44,24 @@ namespace PortSniffer.View.Sections
             TargetIP = new IPAddressProperty(
                 "Target IP:",
                 "Required. Acts as the single IP to scan, or the start of a range, or the base address for subnet scanning.",
-                true
+                true,
+               Settings
             );
 
             //TARGET IP RANGE END
             TargetIPRangeEnd = new IPAddressProperty(
                 "Target IP Range End:",
                 "Optional. Acts as the end of a range to scan.",
-                false
+                false,
+                Settings
             );
 
             //SUBNET MASK
             SubnetMask = new IPAddressProperty(
                 "Subnet mask:",
                 "Optional. Subnet mask for your target IP, can be set in CIDR format .",
-                false
+                false,
+                Settings
             );
 
             //just for testing for now
@@ -102,6 +106,13 @@ namespace PortSniffer.View.Sections
         public void RemoveHighlightValidationError(ScanPropertyInputAbstract property)
         {
             property.Input.BackColor = Color.White;
+        }
+
+        public override void ApplySettings()
+        {
+            TargetIP.ApplySettings();
+            TargetIPRangeEnd.ApplySettings();
+            SubnetMask.ApplySettings();
         }
     }
 

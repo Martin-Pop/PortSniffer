@@ -1,4 +1,5 @@
-﻿using PortSniffer.View.Abstract;
+﻿using PortSniffer.Core.Config;
+using PortSniffer.View.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,7 +16,7 @@ namespace PortSniffer.View.ScanProperties
         public IPAddress IpAddress { get; set; } = IPAddress.None;
         public event EventHandler? ValidationEvent;
 
-        public IPAddressProperty(string label, string toolTipMessage, bool required, string placeholder = "") : base(label, toolTipMessage, required, placeholder)
+        public IPAddressProperty(string label, string toolTipMessage, bool required,Settings settings, string placeholder = "") : base(label, toolTipMessage, required, settings, placeholder)
         {
             IsValid = false;
             Input.KeyDown += Control_KeyDown;
@@ -30,7 +31,6 @@ namespace PortSniffer.View.ScanProperties
                 e.Handled = true;
                 e.SuppressKeyPress = true;
                 
-
                 Label.Focus(); //lose focus so that the event is triggered
             }
         }
@@ -41,6 +41,13 @@ namespace PortSniffer.View.ScanProperties
             IpAddress = IPAddress.None;
             Input.Text = string.Empty;
             Input.BackColor = Color.White;
+        }
+
+        public override void ApplySettings()
+        {
+            Label.Font = new Font(Settings.FontFamily, Settings.FontSize, FontStyle.Regular);
+            Input.Font = new Font(Settings.FontFamily, Settings.FontSize, FontStyle.Regular);
+            RequiredStart.Font = new Font(Settings.FontFamily, Settings.FontSize, FontStyle.Regular);
         }
     }
 }

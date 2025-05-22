@@ -12,8 +12,9 @@ namespace PortSniffer.Presenter
     {
         private readonly OutputConsoleView outputConsoleView;
         
-        private readonly Color warnColor = Color.FromArgb(255, 0, 0);
+        private readonly Color warnColor = Color.FromArgb(225, 0, 0);
         private readonly Color infoColor = Color.Black;
+        private readonly Color errorColor = Color.Red;
 
         public OutputConsolePresenter(OutputConsoleView outputConsoleView)
         {
@@ -28,6 +29,11 @@ namespace PortSniffer.Presenter
         public void Warn(string msg)
         {
             outputConsoleView.Write(msg, warnColor);
+        }
+
+        public void Error(string msg)
+        {
+            outputConsoleView.Write(msg, errorColor);
         }
     }
 }

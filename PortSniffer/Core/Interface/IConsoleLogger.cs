@@ -10,5 +10,6 @@ namespace PortSniffer.Core.Interface
     {
         void Warn(string msg);
         void Log(string msg);
+        void Error(string msg);
     }
 }

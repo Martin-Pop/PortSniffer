@@ -1,4 +1,6 @@
-﻿using PortSniffer.View.Interface;
+﻿using PortSniffer.Core.Config;
+using PortSniffer.View.Abstract;
+using PortSniffer.View.Interface;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,33 +10,34 @@ using System.Threading.Tasks;
 
 namespace PortSniffer.View.Sections
 {
-    public class OutputConsoleView : Panel, IOutpuConsoleView
+    public class OutputConsoleView : PanelAbstract, IOutpuConsoleView
     {
         private readonly RichTextBox console;
-        private readonly Button clearButton;
-        public OutputConsoleView()
+        public Settings Settings { get; set; }
+        public OutputConsoleView(Settings settings): base(settings)
         {
+            Settings = settings;
+
             Dock = DockStyle.Fill;
 
             console = new RichTextBox();
             console.Dock = DockStyle.Fill;
             console.ReadOnly = true;
             console.BorderStyle = BorderStyle.Fixed3D;
-            console.Font = new Font("Consolas", 11F, FontStyle.Regular);
+            ApplySettings();
 
             console.KeyDown += HandleConsoleInput;
 
-
-            clearButton = new Button();
-            clearButton.Text = "R";
-            clearButton.Width = 25;
-            clearButton.Height = 25;
-            //TODO: add icon + make this buttun iside controls and not here
-            //Controls.Add(clearButton);
+            //TODO: add clear button to control panel
             Controls.Add(console);
-
-            clearButton.BringToFront();
         }
+
+        public override void ApplySettings()
+        {
+            console.Font = new Font(Settings.FontFamily, Settings.FontSize, FontStyle.Regular);
+            console.BackColor = ColorTranslator.FromHtml(Settings.ConsoleBackgroundColor);
+        }
+
 
         public void Write(string msg, Color color)
         {
@@ -50,12 +53,11 @@ namespace PortSniffer.View.Sections
 
         public void Clear()
         {
-            throw new NotImplementedException();
+            console.Clear();
         }
 
         private void HandleConsoleInput(object? sender, KeyEventArgs e)
-        {
-            
+        {   
             e.SuppressKeyPress = true;
             e.Handled = true;
         }

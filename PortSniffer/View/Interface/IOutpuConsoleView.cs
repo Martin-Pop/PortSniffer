@@ -17,6 +17,9 @@ namespace PortSniffer.View.Interface
         /// <param name="message">The message</param>
         /// <param name="color">Color of the message</param>
         void Write(string message, Color color);
+        /// <summary>
+        /// Clears the console.
+        /// </summary>
         void Clear();
     }
 }

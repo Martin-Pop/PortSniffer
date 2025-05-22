@@ -1,3 +1,4 @@
+using PortSniffer.Core.Config;
 using PortSniffer.Presenter;
 //using PortSniffer.UI;
 using PortSniffer.View;
@@ -15,19 +16,27 @@ namespace PortSniffer
         [STAThread]
         static void Main()
         {
-
             Application.EnableVisualStyles();
             
+            //settings
+            SettingsManager settingsManager = new SettingsManager(Path.Combine(Application.StartupPath, "config.json"));
+            settingsManager.SaveSettings(out string message);
+
+            //main form
             MainForm mainForm = new MainForm();
 
-            OutputConsoleView outputConsoleView = new OutputConsoleView();
+            //output console
+            OutputConsoleView outputConsoleView = new OutputConsoleView(settingsManager.Settings);
             OutputConsolePresenter outputConsolePresenter = new OutputConsolePresenter(outputConsoleView);
 
-            ControlPanelView controlPanelView = new ControlPanelView();
+            //controls
+            ControlPanelView controlPanelView = new ControlPanelView(settingsManager.Settings);
             ScanControlsPresenter scanControlsPresenter = new ScanControlsPresenter(controlPanelView, outputConsolePresenter);
 
-            mainForm.AddViews(controlPanelView, outputConsoleView);
+            //scan resuls
+            //not yet :\
 
+            mainForm.AddViews(controlPanelView, outputConsoleView);
             Application.Run(mainForm);
 
             //TODO: make settings and new interface for reaplying settings? => settings form :weary: ?

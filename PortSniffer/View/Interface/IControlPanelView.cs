@@ -28,8 +28,16 @@ namespace PortSniffer.View.Interface
         /// </summary>
         IPAddressProperty SubnetMask { get; }
 
+        /// <summary>
+        /// Visually highlights validation error.
+        /// </summary>
+        /// <param name="property">Property to highlight</param>
         void HighlightValidationError(ScanPropertyInputAbstract property);
 
+        /// <summary>
+        /// Visually resets the validation error highlight.
+        /// </summary>
+        /// <param name="property">Property to highlight</param>
         void RemoveHighlightValidationError(ScanPropertyInputAbstract property);
     }
 }
