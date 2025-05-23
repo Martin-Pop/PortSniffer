@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 namespace PortSniffer.View.Interface
 {
     /// <summary>
-    /// Repesents the control panel view for managing properties.
+    /// Repesents the view for managing scan properties.
     /// </summary>
-    public interface IControlPanelView
+    public interface IScanPropertiesView
     {
         /// <summary>
         /// Property for Target IP.
@@ -48,6 +48,8 @@ namespace PortSniffer.View.Interface
         /// Timeout for each scan.
         /// </summary>
         TimeoutProperty Timeout { get; }
+
+        ScanPropertyCheckBox OnlyWellKnownPorts { get; }
 
         /// <summary>
         /// Visually highlights validation error.

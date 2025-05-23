@@ -1,4 +1,5 @@
 ﻿using PortSniffer.Core.Config;
+using PortSniffer.View.Interface;
 using PortSniffer.View.ScanProperties;
 using System;
 using System.Collections.Generic;
@@ -39,11 +40,11 @@ namespace PortSniffer.View.Abstract
             Label.Text = label;
             Label.TextAlign = ContentAlignment.MiddleLeft;
             Label.AutoSize = true;
-            Label.Dock = DockStyle.Left;
 
             //tooltip
             Tooltip = new PropertyTooltip(toolTipMessage);
 
+            //input
             Input = new TextBox();
             Input.Multiline = false;
             Input.Dock = DockStyle.Top;

@@ -13,11 +13,8 @@ namespace PortSniffer.View.Sections
     public class OutputConsoleView : PanelAbstract, IOutpuConsoleView
     {
         private readonly RichTextBox console;
-        public Settings Settings { get; set; }
         public OutputConsoleView(Settings settings): base(settings)
         {
-            Settings = settings;
-
             Dock = DockStyle.Fill;
 
             console = new RichTextBox();
@@ -41,7 +38,7 @@ namespace PortSniffer.View.Sections
 
         public void Write(string msg, Color color)
         {
-            Debug.WriteLine($"Thread: {Thread.CurrentThread.ManagedThreadId}, InvokeRequired: {console.InvokeRequired}");
+            console.AppendText(">> ");
             console.SelectionStart = console.TextLength;
             console.SelectionLength = 0;
 

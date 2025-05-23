@@ -40,7 +40,7 @@ namespace PortSniffer.View
 
         }
 
-        public void AddViews(ControlPanelView controlPanelView, OutputConsoleView outputConsoleView) //add other later (made so they are added to the correct panels)
+        public void AddViews(ScanPropertiesView controlPanelView, OutputConsoleView outputConsoleView) //add other later (made so they are added to the correct panels)
         {
             mainSplitContainer.Panel2.Controls.Add(controlPanelView);
             leftSplitContainer.Panel2.Controls.Add(outputConsoleView);

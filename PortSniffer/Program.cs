@@ -30,8 +30,8 @@ namespace PortSniffer
             OutputConsolePresenter outputConsolePresenter = new OutputConsolePresenter(outputConsoleView);
 
             //controls
-            ControlPanelView controlPanelView = new ControlPanelView(settingsManager.Settings);
-            ScanControlsPresenter scanControlsPresenter = new ScanControlsPresenter(controlPanelView, outputConsolePresenter);
+            ScanPropertiesView controlPanelView = new ScanPropertiesView(settingsManager.Settings);
+            ScanPropertiesPresenter scanControlsPresenter = new ScanPropertiesPresenter(controlPanelView, outputConsolePresenter);
 
             //scan resuls
             //not yet :\

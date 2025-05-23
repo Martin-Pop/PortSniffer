@@ -9,24 +9,20 @@ using System.Windows.Forms;
 
 namespace PortSniffer.View.Sections
 {
-    public class ControlPanelView : PanelAbstract, IControlPanelView
+    public class ScanPropertiesView : PanelAbstract, IScanPropertiesView
     {
         private TableLayoutPanel scanProperties;
-        private Panel bottomPanel;
 
         public IPAddressProperty TargetIP { get; private set; }
         public IPAddressProperty TargetIPRangeEnd { get; private set; }
         public IPAddressProperty SubnetMask { get; private set; }
-
         public PortProperty PortRangeStart { get; private set; }
-
         public PortProperty PortRangeEnd { get; private set; }
-
         public MaxConcurrentProperty MaximumConcurrentScans { get; private set; }
-
         public TimeoutProperty Timeout { get; private set; }
+        public ScanPropertyCheckBox OnlyWellKnownPorts { get; private set; }
 
-        public ControlPanelView(Settings settings): base(settings)
+        public ScanPropertiesView(Settings settings): base(settings)
         {
             Dock = DockStyle.Fill;
 
@@ -37,14 +33,9 @@ namespace PortSniffer.View.Sections
             scanProperties.AutoScroll = true;
             scanProperties.AutoSize = false;
 
-            bottomPanel = new Panel();
-            bottomPanel.BackColor = Color.LightBlue;
-            bottomPanel.Dock = DockStyle.Bottom;
-
             InitializeControls();
 
             Controls.Add(scanProperties);
-            Controls.Add(bottomPanel);   
         }
 
         public void InitializeControls()
@@ -92,7 +83,7 @@ namespace PortSniffer.View.Sections
             //MAXIMUM CONCURRENT SCANS
             MaximumConcurrentScans = new MaxConcurrentProperty(
                 "Maximum Concurrent Scans:",
-                "Optional. Maximum number of concurrent scans to run, high numbers can trigger firewall.",
+                "Optional. Maximum number of concurrent scans to run.",
                 false,
                 Settings
             );
@@ -105,34 +96,21 @@ namespace PortSniffer.View.Sections
                 Settings
             );
 
-
-            //just for testing for now
-            //for (int i = 0; i < 15; i++)
-            //{
-            //    PropertyLabel l = new PropertyLabel($"Test {i}");
-            //    PropertyTooltip p = new PropertyTooltip("Required. Acts as the single IP to scan, or the start of a range (if 'Target IP Range End' is set), or the base address for subnet scanning (if Subnet Mask is provided).");
-            //    PropertyTextInput t = new PropertyTextInput();
-            //    IPAddressProperty test = new IPAddressProperty(l, p, t, true);
-
-            //    scanProperties.Controls.Add(test);
-            //}
-
-            Button startButton = new Button();
-            startButton.Text = "Start Scan";
-            startButton.Dock = DockStyle.Bottom;
-
-
-            bottomPanel.Controls.Add(startButton);
+            //ONLY WELL KNOW PORTS
+            OnlyWellKnownPorts = new ScanPropertyCheckBox(
+                "Only well known ports:",
+                "Optional. If selected, only well known ports (1 - 1023) will be scanned.",
+                Settings
+            );
 
             scanProperties.Controls.Add(TargetIP);
             scanProperties.Controls.Add(TargetIPRangeEnd);
             scanProperties.Controls.Add(SubnetMask);
             scanProperties.Controls.Add(PortRangeStart);
             scanProperties.Controls.Add(PortRangeEnd);
+            scanProperties.Controls.Add(OnlyWellKnownPorts);
             scanProperties.Controls.Add(MaximumConcurrentScans);
             scanProperties.Controls.Add(Timeout);
-
-            Debug.WriteLine("Initialized Control panel  ");
         }
 
         /// <summary>
@@ -159,11 +137,13 @@ namespace PortSniffer.View.Sections
         /// </summary>
         public override void ApplySettings()
         {
-            TargetIP.ApplySettings();
-            TargetIPRangeEnd.ApplySettings();
-            SubnetMask.ApplySettings();
-            PortRangeStart.ApplySettings();
-            PortRangeEnd.ApplySettings();
+            foreach (Control control in scanProperties.Controls)
+            {
+                if (control is PanelAbstract input)
+                {
+                    input.ApplySettings();
+                }
+            }
         }
     }
 
