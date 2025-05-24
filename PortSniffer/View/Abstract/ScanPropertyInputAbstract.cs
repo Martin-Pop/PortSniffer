@@ -40,6 +40,7 @@ namespace PortSniffer.View.Abstract
             Label.Text = label;
             Label.TextAlign = ContentAlignment.MiddleLeft;
             Label.AutoSize = true;
+            Label.Dock = DockStyle.Left;
 
             //tooltip
             Tooltip = new PropertyTooltip(toolTipMessage);
@@ -47,7 +48,7 @@ namespace PortSniffer.View.Abstract
             //input
             Input = new TextBox();
             Input.Multiline = false;
-            Input.Dock = DockStyle.Top;
+            Input.Dock = DockStyle.Bottom;
 
             labelPanel.Controls.Add(Label);
             labelPanel.Controls.Add(Tooltip);

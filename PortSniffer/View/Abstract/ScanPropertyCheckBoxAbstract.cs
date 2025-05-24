@@ -1,5 +1,4 @@
 ﻿using PortSniffer.Core.Config;
-using PortSniffer.View.Abstract;
 using PortSniffer.View.Interface;
 using PortSniffer.View.ScanProperties;
 using System;
@@ -8,18 +7,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PortSniffer.View.Controls
+namespace PortSniffer.View.Abstract
 {
-    public class ScanPropertyCheckBox : PanelAbstract
+    public abstract class ScanPropertyCheckBoxAbstract : PanelAbstract
     {
         protected FlowLayoutPanel labelPanel;
         public Label Label { get; init; }
         public PropertyTooltip Tooltip { get; init; }
         public CheckBox Input { get; protected set; }
         public bool IsValid { get; set; }
-
-        public event EventHandler? StateChangedEvent;
-        public ScanPropertyCheckBox(string label, string toolTipMessage, Settings settings) : base(settings)
+        public ScanPropertyCheckBoxAbstract(string label, string toolTipMessage, Settings settings) : base(settings)
         {
             //this
             AutoSize = true;
@@ -57,19 +54,19 @@ namespace PortSniffer.View.Controls
             Controls.Add(labelPanel);
 
             IsValid = false;
-            Input.CheckedChanged += HandleInput;
+            //Input.CheckedChanged += HandleInput;
 
         }
 
-        private void HandleInput(object? sender, EventArgs e)
-        {
-            if (Input.Checked)
-            {
-                IsValid = true;
-            }
+        //private void HandleInput(object? sender, EventArgs e)
+        //{
+        //    if (Input.Checked)
+        //    {
+        //        IsValid = true;
+        //    }
 
-            StateChangedEvent?.Invoke(this, EventArgs.Empty);
-        }
+        //    StateChangedEvent?.Invoke(this, EventArgs.Empty);
+        //}
 
         public override void ApplySettings()
         {

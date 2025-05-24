@@ -1,10 +1,5 @@
 ﻿using PortSniffer.Core.Config;
 using PortSniffer.View.Abstract;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PortSniffer.View.Controls
 {

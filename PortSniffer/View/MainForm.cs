@@ -1,4 +1,5 @@
-﻿using PortSniffer.View.Sections;
+﻿using PortSniffer.View.Interface;
+using PortSniffer.View.Sections;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,16 +16,16 @@ namespace PortSniffer.View
     {
         private readonly SplitContainer mainSplitContainer;
         private readonly SplitContainer leftSplitContainer;
+        //private readonly SplitContainer topSplitContainer;
 
         public MainForm()
         {
-            Size = new Size(800, 600);
+            Size = new Size(1000, 600);
             MinimumSize = new Size(480, 360);
             Text = "Port Sniffer";
             Padding = new Padding(5);
 
-
-            //main layout
+            //layout
             mainSplitContainer = new SplitContainer();
             mainSplitContainer.Dock = DockStyle.Fill;
             mainSplitContainer.SplitterDistance = 100;
@@ -34,16 +35,22 @@ namespace PortSniffer.View
             leftSplitContainer.Orientation = Orientation.Horizontal;
             leftSplitContainer.Panel1.BackColor = Color.LightBlue;
 
+            //topSplitContainer = new SplitContainer();
+            //topSplitContainer.Dock = DockStyle.Fill;
+            //topSplitContainer.Orientation = Orientation.Vertical;
+            //topSplitContainer.Panel1.BackColor = Color.LightGreen;
+
+            //leftSplitContainer.Panel1.Controls.Add(topSplitContainer);
             mainSplitContainer.Panel1.Controls.Add(leftSplitContainer);
 
             Controls.Add(mainSplitContainer);
-
         }
 
-        public void AddViews(ScanPropertiesView controlPanelView, OutputConsoleView outputConsoleView) //add other later (made so they are added to the correct panels)
+        public void AddViews(ScanPropertiesView scanPropertiesView, OutputConsoleView outputConsoleView,ControlPanelView controlPanelView) //add other later (made so they are added to the correct panels)
         {
-            mainSplitContainer.Panel2.Controls.Add(controlPanelView);
+            mainSplitContainer.Panel2.Controls.Add(scanPropertiesView);
             leftSplitContainer.Panel2.Controls.Add(outputConsoleView);
+            mainSplitContainer.Panel2.Controls.Add(controlPanelView);
         }
 
     }

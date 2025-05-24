@@ -1,5 +1,6 @@
 ﻿using PortSniffer.View.Abstract;
 using PortSniffer.View.Controls;
+using PortSniffer.View.Properties;
 using PortSniffer.View.ScanProperties;
 using System;
 using System.Collections.Generic;
@@ -49,7 +50,10 @@ namespace PortSniffer.View.Interface
         /// </summary>
         TimeoutProperty Timeout { get; }
 
-        ScanPropertyCheckBox OnlyWellKnownPorts { get; }
+        PredefinedPortsProperty OnlyWellKnownPorts { get; }
+        PredefinedPortsProperty OnlyRegisteredPorts { get; }
+        PredefinedPortsProperty OnlyPrivatePorts { get; }
+        PredefinedPortsProperty AllPorts { get; }
 
         /// <summary>
         /// Visually highlights validation error.

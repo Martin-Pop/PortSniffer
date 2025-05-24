@@ -38,12 +38,12 @@ namespace PortSniffer.View.Sections
 
         public void Write(string msg, Color color)
         {
-            console.AppendText(">> ");
+            console.AppendText("\n>> ");
             console.SelectionStart = console.TextLength;
             console.SelectionLength = 0;
 
             console.SelectionColor = color; 
-            console.AppendText(msg + "\n");
+            console.AppendText(msg);
             console.SelectionColor = console.ForeColor;
 
             //hoefully fixes crash if user minimeses the window at before the invoke: pray:

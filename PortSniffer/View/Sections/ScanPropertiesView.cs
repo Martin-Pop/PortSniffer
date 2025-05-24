@@ -2,17 +2,14 @@
 using PortSniffer.View.Abstract;
 using PortSniffer.View.Controls;
 using PortSniffer.View.Interface;
+using PortSniffer.View.Properties;
 using PortSniffer.View.ScanProperties;
-using System;
-using System.Diagnostics;
-using System.Windows.Forms;
 
 namespace PortSniffer.View.Sections
 {
     public class ScanPropertiesView : PanelAbstract, IScanPropertiesView
     {
         private TableLayoutPanel scanProperties;
-
         public IPAddressProperty TargetIP { get; private set; }
         public IPAddressProperty TargetIPRangeEnd { get; private set; }
         public IPAddressProperty SubnetMask { get; private set; }
@@ -20,18 +17,25 @@ namespace PortSniffer.View.Sections
         public PortProperty PortRangeEnd { get; private set; }
         public MaxConcurrentProperty MaximumConcurrentScans { get; private set; }
         public TimeoutProperty Timeout { get; private set; }
-        public ScanPropertyCheckBox OnlyWellKnownPorts { get; private set; }
+        public PredefinedPortsProperty OnlyWellKnownPorts { get; private set; }
+        public PredefinedPortsProperty OnlyRegisteredPorts { get; private set; }
+        public PredefinedPortsProperty OnlyPrivatePorts { get; private set; }
+        public PredefinedPortsProperty AllPorts { get; private set; }
 
         public ScanPropertiesView(Settings settings): base(settings)
         {
+            AutoSize = true;
             Dock = DockStyle.Fill;
 
             scanProperties = new TableLayoutPanel();
-            scanProperties.Dock = DockStyle.Fill;         
-            scanProperties.ColumnCount = 1;
-            scanProperties.RowCount = 50;
-            scanProperties.AutoScroll = true;
+            scanProperties.Dock = DockStyle.Fill;
             scanProperties.AutoSize = false;
+            scanProperties.AutoScroll = true;
+            scanProperties.ColumnCount = 1;
+            scanProperties.RowCount = 20; //big enough to fit all controls so last one doesnt stretch
+
+            //inspired by this answer => https://stackoverflow.com/a/6555682
+            scanProperties.Padding = new Padding(0, 0, 1, 0); //supresses horizontal scrollbar!!!!
 
             InitializeControls();
 
@@ -97,10 +101,39 @@ namespace PortSniffer.View.Sections
             );
 
             //ONLY WELL KNOW PORTS
-            OnlyWellKnownPorts = new ScanPropertyCheckBox(
+            OnlyWellKnownPorts = new PredefinedPortsProperty(
                 "Only well known ports:",
                 "Optional. If selected, only well known ports (1 - 1023) will be scanned.",
-                Settings
+                Settings,
+                1,
+                1023
+            );
+
+            //ONLY REGISTERED PORTS
+            OnlyRegisteredPorts = new PredefinedPortsProperty(
+                 "Only registered ports:",
+                 "Optional. If selected, only registered ports (1024 - 49151) will be scanned.",
+                 Settings,
+                 1024,
+                 49151
+             );
+
+            //ONLY PRIVATE PORTS
+            OnlyPrivatePorts = new PredefinedPortsProperty(
+                "Only private ports:",
+                "Optional. If selected, only private ports (49152 - 65535) will be scanned.",
+                Settings,
+                49152,
+                65535
+            );
+
+            //ALL PORTS
+            AllPorts = new PredefinedPortsProperty(
+                "All ports:",
+                "Optional. If selected, all ports (1 - 65535) will be scanned.",
+                Settings,
+                1,
+                65535
             );
 
             scanProperties.Controls.Add(TargetIP);
@@ -109,6 +142,9 @@ namespace PortSniffer.View.Sections
             scanProperties.Controls.Add(PortRangeStart);
             scanProperties.Controls.Add(PortRangeEnd);
             scanProperties.Controls.Add(OnlyWellKnownPorts);
+            scanProperties.Controls.Add(OnlyRegisteredPorts);
+            scanProperties.Controls.Add(OnlyPrivatePorts);
+            scanProperties.Controls.Add(AllPorts);
             scanProperties.Controls.Add(MaximumConcurrentScans);
             scanProperties.Controls.Add(Timeout);
         }
