@@ -1,5 +1,4 @@
-﻿using PortSniffer.View.Abstract;
-using PortSniffer.View.Controls;
+﻿using PortSniffer.View.Controls;
 using PortSniffer.View.Properties;
 using PortSniffer.View.ScanProperties;
 using System;
@@ -8,12 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PortSniffer.View.Interface
+namespace PortSniffer.Core.Interface
 {
-    /// <summary>
-    /// Repesents the view for managing scan properties.
-    /// </summary>
-    public interface IScanPropertiesView
+    public interface IScanProperties
     {
         /// <summary>
         /// Property for Target IP.
@@ -54,17 +50,5 @@ namespace PortSniffer.View.Interface
         PredefinedPortsProperty OnlyRegisteredPorts { get; }
         PredefinedPortsProperty OnlyPrivatePorts { get; }
         PredefinedPortsProperty AllPorts { get; }
-
-        /// <summary>
-        /// Visually highlights validation error.
-        /// </summary>
-        /// <param name="property">Property to highlight</param>
-        void HighlightValidationError(ScanPropertyInputAbstract property);
-
-        /// <summary>
-        /// Visually resets the validation error highlight.
-        /// </summary>
-        /// <param name="property">Property to highlight</param>
-        void RemoveHighlightValidationError(ScanPropertyInputAbstract property);
     }
 }

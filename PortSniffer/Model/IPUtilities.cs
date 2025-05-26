@@ -7,10 +7,16 @@ using System.Threading.Tasks;
 
 namespace PortSniffer.Model
 {
-    public static class IPValidator
+    public static class IPUtilities
     {
         //IP
 
+        /// <summary>
+        /// Validates if provided string is a valid IP address.
+        /// </summary>
+        /// <param name="input">input to validate</param>
+        /// <param name="ip">out Parameter for IP Adress</param>
+        /// <returns>Treu if ipnut is valid IP Adress, otherwise false</returns>
         public static bool ValidateIP(string input, out IPAddress? ip)
         {
             ip = null;
@@ -26,6 +32,12 @@ namespace PortSniffer.Model
             return false;
         }
 
+        /// <summary>
+        /// Checks if first IP is greater than second IP.
+        /// </summary>
+        /// <param name="ip1">First IP</param>
+        /// <param name="ip2">Second IP</param>
+        /// <returns>True if f</returns>
         public static bool IsGreaterThan(IPAddress ip1, IPAddress ip2)
         {
             byte[] bytes1 = ip1.GetAddressBytes();
@@ -40,9 +52,56 @@ namespace PortSniffer.Model
             return false;
         }
 
-        //SUBNET MASK
+        /// <summary>
+        /// Creates lsit of IP Adresses from provided range.
+        /// </summary>
+        /// <remarks>IP range 'start' and 'end' MUST be in correct order 'start' < 'end' </remarks>
+        /// <param name="start">IP Adress representing the start of a range</param>
+        /// <param name="end">IP Adress representing the end of a range</param>
+        /// <returns></returns>
+        public static List<IPAddress> GetIPAddressesFromRange(IPAddress start, IPAddress end)
+        {
+            List<IPAddress> addresses = new List<IPAddress>();
 
-        //validating by flipping bits is too complex so im using this list.
+            uint s = IpToUint32(start);
+            uint e = IpToUint32(end);
+
+            for (uint i = s; i <= e; i++)
+            {
+                addresses.Add(Uint32ToIp(i));
+            }
+
+            return addresses;
+        }
+
+        /// <summary>
+        /// Converts uint to IPAddress.
+        /// Uses Big Endian format => can correctly add 1 to it (192.168.0.1 +1 => 192.168.0.2)
+        /// </summary>
+        /// <param name="ip">IP Adress to convert</param>
+        /// <returns>IP Adress converted to uint32</returns>
+        public static uint IpToUint32(IPAddress ip)
+        {
+            byte[] bytes = ip.GetAddressBytes();
+            if (BitConverter.IsLittleEndian) Array.Reverse(bytes);
+            return BitConverter.ToUInt32(bytes, 0);
+        }
+
+        /// <summary>
+        /// Converts uint to IPAddress.
+        /// Uses Big Endian format.
+        /// </summary>
+        /// <param name="value">uint value</param>
+        /// <returns>IP adress</returns>
+        public static IPAddress Uint32ToIp(uint value)
+        {
+            byte[] bytes = BitConverter.GetBytes(value);
+            if (BitConverter.IsLittleEndian) Array.Reverse(bytes);
+            return new IPAddress(bytes);
+        }
+
+        //SUBNET MASK
+        //validating mask by flipping bits is too complex so im using this list 🙏😩😭🥀🥀.
         private static readonly string[] ValidMasks =
         [
             "128.0.0.0", "192.0.0.0", "224.0.0.0", "240.0.0.0",
@@ -57,6 +116,12 @@ namespace PortSniffer.Model
             "255.255.255.255"
         ];
 
+        /// <summary>
+        /// Validates subnet mask in CIDR or normal format.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="mask"></param>
+        /// <returns></returns>
         public static bool ValidateSubnetMask(string input, out IPAddress? mask)
         {
             mask = null;

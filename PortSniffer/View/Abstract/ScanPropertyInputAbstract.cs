@@ -85,6 +85,9 @@ namespace PortSniffer.View.Abstract
             }
         }
 
+        /// <summary>
+        /// Applies settings.
+        /// </summary>
         public override void ApplySettings()
         {
             Label.Font = new Font(Settings.FontFamily, Settings.FontSize, FontStyle.Regular);
@@ -93,8 +96,34 @@ namespace PortSniffer.View.Abstract
         }
 
         /// <summary>
+        /// Sets valid property to false and hihglits the input.
+        /// </summary>
+        public void Error()
+        {
+            IsValid = false;
+            Input.BackColor = Color.LightCoral;
+        }
+
+        /// <summary>
+        /// Removes highlight for validation error.
+        /// </summary>
+        public void RemovetValidationError()
+        {
+            Input.BackColor = Color.White;
+        }
+        /// <summary>
+        /// Sets valid property, removes highlight.
+        /// </summary>
+        public void Validate()
+        {
+            IsValid = true;
+            Input.BackColor = Color.White;
+        }
+
+        /// <summary>
         /// Reset the property to its default state.
         /// </summary>
         public abstract void Reset();
+
     }
 }

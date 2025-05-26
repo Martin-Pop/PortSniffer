@@ -9,25 +9,25 @@ namespace PortSniffer.Presenter
 {
     public class ScanPropertiesPresenter
     {
-        private readonly IScanPropertiesView scanPropertiesView;
+        private readonly IScanProperties scanProperties;
         private readonly IConsoleLogger logger;
-        public ScanPropertiesPresenter(IScanPropertiesView view, IConsoleLogger logger)
+        public ScanPropertiesPresenter(IScanProperties properties, IConsoleLogger logger)
         {
+            scanProperties = properties;
             this.logger = logger;
-            scanPropertiesView = view;
 
             //events
-            scanPropertiesView.TargetIP.ValidationEvent += OnTargetIPValidation;
-            scanPropertiesView.TargetIPRangeEnd.ValidationEvent += OnTargetIPRangeEndValidation;
-            scanPropertiesView.SubnetMask.ValidationEvent += OnSubnetMaskValidation;
-            scanPropertiesView.PortRangeStart.ValidationEvent += OnPortRangeStartValidation;
-            scanPropertiesView.PortRangeEnd.ValidationEvent += OnPortRangeEndValidation;
-            scanPropertiesView.MaximumConcurrentScans.ValidationEvent += OnMaximumConcurrentScansValidation;
-            scanPropertiesView.Timeout.ValidationEvent += OnTimeoutValidation;
-            scanPropertiesView.OnlyWellKnownPorts.StateChangedEvent += OnPredefinedPortsChanged;
-            scanPropertiesView.OnlyRegisteredPorts.StateChangedEvent += OnPredefinedPortsChanged;
-            scanPropertiesView.OnlyPrivatePorts.StateChangedEvent += OnPredefinedPortsChanged;
-            scanPropertiesView.AllPorts.StateChangedEvent += OnPredefinedPortsChanged;
+            scanProperties.TargetIP.ValidationEvent += OnTargetIPValidation;
+            scanProperties.TargetIPRangeEnd.ValidationEvent += OnTargetIPRangeEndValidation;
+            scanProperties.SubnetMask.ValidationEvent += OnSubnetMaskValidation;
+            scanProperties.PortRangeStart.ValidationEvent += OnPortRangeStartValidation;
+            scanProperties.PortRangeEnd.ValidationEvent += OnPortRangeEndValidation;
+            scanProperties.MaximumConcurrentScans.ValidationEvent += OnMaximumConcurrentScansValidation;
+            scanProperties.Timeout.ValidationEvent += OnTimeoutValidation;
+            scanProperties.OnlyWellKnownPorts.StateChangedEvent += OnPredefinedPortsChanged;
+            scanProperties.OnlyRegisteredPorts.StateChangedEvent += OnPredefinedPortsChanged;
+            scanProperties.OnlyPrivatePorts.StateChangedEvent += OnPredefinedPortsChanged;
+            scanProperties.AllPorts.StateChangedEvent += OnPredefinedPortsChanged;
         }
 
         /// <summary>
@@ -35,29 +35,27 @@ namespace PortSniffer.Presenter
         /// </summary>
         private void ValidateIPTargetRangeEnd()
         {
-            if (IPValidator.ValidateIP(scanPropertiesView.TargetIPRangeEnd.Input.Text, out IPAddress? ip))
+            if (IPUtilities.ValidateIP(scanProperties.TargetIPRangeEnd.Input.Text, out IPAddress? ip))
             {
-                if (IPValidator.IsGreaterThan(ip!, scanPropertiesView.TargetIP.IpAddress))
+                if (IPUtilities.IsGreaterThan(ip!, scanProperties.TargetIP.IpAddress))
                 {
-                    scanPropertiesView.TargetIPRangeEnd.IpAddress = ip!;
-                    scanPropertiesView.TargetIPRangeEnd.Input.Text = ip!.ToString();
-                    scanPropertiesView.TargetIPRangeEnd.IsValid = true;
-                    logger.Log($"Successfully set IP adress range-end to {scanPropertiesView.TargetIPRangeEnd.Input.Text}");
+                    scanProperties.TargetIPRangeEnd.IpAddress = ip!;
+                    scanProperties.TargetIPRangeEnd.Input.Text = ip!.ToString();
+                    scanProperties.TargetIPRangeEnd.IsValid = true;
+                    logger.Log($"Successfully set IP adress range-end to {scanProperties.TargetIPRangeEnd.Input.Text}");
                     return;
                 }
                 else
                 {
-                    logger.Error($"IP address range-end \"{ip}\" must be greater than \"{scanPropertiesView.TargetIP.Input.Text}\"");
-                    scanPropertiesView.TargetIPRangeEnd.Input.Text = ip!.ToString();
+                    logger.Error($"IP address range-end \"{ip}\" must be greater than \"{scanProperties.TargetIP.Input.Text}\"");
+                    scanProperties.TargetIPRangeEnd.Input.Text = ip!.ToString();
                 }
             }
             else
             {
-                logger.Error($"IP address range-end \"{scanPropertiesView.TargetIPRangeEnd.Input.Text}\" is not in the valid IPv4 format");
+                logger.Error($"IP address range-end \"{scanProperties.TargetIPRangeEnd.Input.Text}\" is not in the valid IPv4 format");
             }
-
-            scanPropertiesView.HighlightValidationError(scanPropertiesView.TargetIPRangeEnd);
-            scanPropertiesView.TargetIPRangeEnd.IsValid = false;
+            scanProperties.TargetIPRangeEnd.Error();
         }
 
         /// <summary>
@@ -65,26 +63,26 @@ namespace PortSniffer.Presenter
         /// </summary>
         private void ValidatePortRangeEnd()
         {
-            if (int.TryParse(scanPropertiesView.PortRangeEnd.Input.Text, out int port) && port > 0 && port <= 65535)
+            if (int.TryParse(scanProperties.PortRangeEnd.Input.Text, out int port) && port > 0 && port <= 65535)
             {
-                if (scanPropertiesView.PortRangeStart.Port < port)
+                if (scanProperties.PortRangeStart.Port < port)
                 {
-                    scanPropertiesView.PortRangeEnd.Port = port;
-                    scanPropertiesView.PortRangeEnd.IsValid = true;
-                    logger.Log($"Successfully set port range-end to {scanPropertiesView.PortRangeEnd.Input.Text}");
+                    scanProperties.PortRangeEnd.Port = port;
+                    scanProperties.PortRangeEnd.IsValid = true;
+                    logger.Log($"Successfully set port range-end to {scanProperties.PortRangeEnd.Input.Text}");
                     return;
                 }
                 else
                 {
-                    logger.Error($"Port range-end \"{scanPropertiesView.PortRangeEnd.Input.Text}\" must be greater than {scanPropertiesView.PortRangeStart.Port} (start)");
+                    logger.Error($"Port range-end \"{scanProperties.PortRangeEnd.Input.Text}\" must be greater than {scanProperties.PortRangeStart.Port} (start)");
                 }
             }
             else
             {
-                logger.Error($"Port range-end \"{scanPropertiesView.PortRangeEnd.Input.Text}\" must be a number within the range of 1 - 65535");
+                logger.Error($"Port range-end \"{scanProperties.PortRangeEnd.Input.Text}\" must be a number within the range of 1 - 65535");
             }
-            scanPropertiesView.HighlightValidationError(scanPropertiesView.PortRangeEnd);
-            scanPropertiesView.PortRangeEnd.IsValid = false;
+            //TODO FIX THIS + make new method for 'valid' option
+            scanProperties.PortRangeEnd.Error();
         }
 
 
@@ -97,36 +95,34 @@ namespace PortSniffer.Presenter
         /// <param name="e">Event arguments</param>
         private void OnTargetIPValidation(object? sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(scanPropertiesView.TargetIP.Input.Text.Trim()))
+            if (string.IsNullOrEmpty(scanProperties.TargetIP.Input.Text.Trim()))
             {
-                scanPropertiesView.TargetIP.Reset();
-                scanPropertiesView.TargetIPRangeEnd.Reset();
+                scanProperties.TargetIP.Reset();
+                scanProperties.TargetIPRangeEnd.Reset();
             }
             else
             {
-                if (IPValidator.ValidateIP(scanPropertiesView.TargetIP.Input.Text, out IPAddress? ip))
+                if (IPUtilities.ValidateIP(scanProperties.TargetIP.Input.Text, out IPAddress? ip))
                 {
-                    scanPropertiesView.TargetIP.IpAddress = ip!;
-                    scanPropertiesView.TargetIP.Input.Text = ip!.ToString();
-                    scanPropertiesView.TargetIP.IsValid = true;
-                    logger.Log($"Successfully set IP adress target to {scanPropertiesView.TargetIP.Input.Text}");
+                    scanProperties.TargetIP.IpAddress = ip!;
+                    scanProperties.TargetIP.Input.Text = ip!.ToString();
+                    scanProperties.TargetIP.IsValid = true;
+                    logger.Log($"Successfully set IP adress target to {scanProperties.TargetIP.Input.Text}");
 
-                    if (!string.IsNullOrWhiteSpace(scanPropertiesView.TargetIPRangeEnd.Input.Text)) //revalidate if there was something
+                    if (!string.IsNullOrWhiteSpace(scanProperties.TargetIPRangeEnd.Input.Text)) //revalidate if there was something
                     {
-                        scanPropertiesView.RemoveHighlightValidationError(scanPropertiesView.TargetIPRangeEnd);
+                        scanProperties.TargetIPRangeEnd.RemovetValidationError();
                         ValidateIPTargetRangeEnd();
                     }
                 }
                 else
                 {
-                    logger.Error($"IP address \"{scanPropertiesView.TargetIP.Input.Text}\" is not in the valid IPv4 format");
-                    scanPropertiesView.HighlightValidationError(scanPropertiesView.TargetIP);
-                    scanPropertiesView.TargetIP.IsValid = false;
+                    logger.Error($"IP address \"{scanProperties.TargetIP.Input.Text}\" is not in the valid IPv4 format");
+                    scanProperties.TargetIP.Error();
 
-                    if (scanPropertiesView.TargetIPRangeEnd.IsValid)
+                    if (scanProperties.TargetIPRangeEnd.IsValid)
                     {
-                        scanPropertiesView.HighlightValidationError(scanPropertiesView.TargetIPRangeEnd);
-                        scanPropertiesView.TargetIPRangeEnd.IsValid = false;
+                        scanProperties.TargetIPRangeEnd.Error();
                     }
                 }
             }
@@ -140,22 +136,21 @@ namespace PortSniffer.Presenter
         /// <param name="e">Event arguments</param>
         private void OnTargetIPRangeEndValidation(object? sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(scanPropertiesView.TargetIPRangeEnd.Input.Text.Trim()))
+            if (string.IsNullOrEmpty(scanProperties.TargetIPRangeEnd.Input.Text.Trim()))
             {
-                scanPropertiesView.TargetIPRangeEnd.Reset();
+                scanProperties.TargetIPRangeEnd.Reset();
             }
             else
             {
-                if (scanPropertiesView.TargetIP.IsValid)
+                if (scanProperties.TargetIP.IsValid)
                 {
                     ValidateIPTargetRangeEnd();
-                    scanPropertiesView.SubnetMask.Reset();
+                    scanProperties.SubnetMask.Reset();
                 }
                 else
                 {
                     logger.Warn($"Please set valid IP Target before setting the range-end");
-                    scanPropertiesView.HighlightValidationError(scanPropertiesView.TargetIPRangeEnd);
-                    scanPropertiesView.TargetIPRangeEnd.IsValid = false;
+                    scanProperties.TargetIPRangeEnd.Error();
                 }
             }
         }
@@ -169,26 +164,25 @@ namespace PortSniffer.Presenter
         /// <param name="e">Event arguments</param>
         private void OnSubnetMaskValidation(object? sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(scanPropertiesView.SubnetMask.Input.Text.Trim()))
+            if (string.IsNullOrEmpty(scanProperties.SubnetMask.Input.Text.Trim()))
             {
-                scanPropertiesView.SubnetMask.Reset();
+                scanProperties.SubnetMask.Reset();
             }
             else
             {
-                if (IPValidator.ValidateSubnetMask(scanPropertiesView.SubnetMask.Input.Text, out IPAddress? mask))
+                if (IPUtilities.ValidateSubnetMask(scanProperties.SubnetMask.Input.Text, out IPAddress? mask))
                 {
-                    scanPropertiesView.SubnetMask.IpAddress = mask!;
-                    scanPropertiesView.SubnetMask.Input.Text = mask!.ToString();
-                    scanPropertiesView.SubnetMask.IsValid = true;
-                    logger.Log($"Successfully set subnet mask to {scanPropertiesView.SubnetMask.Input.Text}");
+                    scanProperties.SubnetMask.IpAddress = mask!;
+                    scanProperties.SubnetMask.Input.Text = mask!.ToString();
+                    scanProperties.SubnetMask.IsValid = true;
+                    logger.Log($"Successfully set subnet mask to {scanProperties.SubnetMask.Input.Text}");
                 }
                 else
                 {
-                    logger.Error($"Subnet mask \"{scanPropertiesView.SubnetMask.Input.Text}\" is not valid IPv4 mask, try using CIDR format");
-                    scanPropertiesView.HighlightValidationError(scanPropertiesView.SubnetMask);
-                    scanPropertiesView.SubnetMask.IsValid = false;
+                    logger.Error($"Subnet mask \"{scanProperties.SubnetMask.Input.Text}\" is not valid IPv4 mask, try using CIDR format");
+                    scanProperties.SubnetMask.Error();
                 }
-                scanPropertiesView.TargetIPRangeEnd.Reset();
+                scanProperties.TargetIPRangeEnd.Reset();
             }
         }
 
@@ -200,34 +194,32 @@ namespace PortSniffer.Presenter
         /// <param name="e">Event arguments</param>
         private void OnPortRangeStartValidation(object? sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(scanPropertiesView.PortRangeStart.Input.Text.Trim()))
+            if (string.IsNullOrEmpty(scanProperties.PortRangeStart.Input.Text.Trim()))
             {
-                scanPropertiesView.PortRangeStart.Reset();
+                scanProperties.PortRangeStart.Reset();
             }
             else
             {
-                if (int.TryParse(scanPropertiesView.PortRangeStart.Input.Text, out int port) && port > 0 && port <= 65535)
+                if (int.TryParse(scanProperties.PortRangeStart.Input.Text, out int port) && port > 0 && port <= 65535)
                 {
-                    scanPropertiesView.PortRangeStart.Port = port;
-                    scanPropertiesView.PortRangeStart.IsValid = true;
-                    logger.Log($"Successfully set port range-start to {scanPropertiesView.PortRangeStart.Input.Text}");
+                    scanProperties.PortRangeStart.Port = port;
+                    scanProperties.PortRangeStart.IsValid = true;
+                    logger.Log($"Successfully set port range-start to {scanProperties.PortRangeStart.Input.Text}");
 
-                    if (!string.IsNullOrWhiteSpace(scanPropertiesView.PortRangeEnd.Input.Text)) //revalidate if there was something
+                    if (!string.IsNullOrWhiteSpace(scanProperties.PortRangeEnd.Input.Text)) //revalidate if there was something
                     {
-                        scanPropertiesView.RemoveHighlightValidationError(scanPropertiesView.PortRangeEnd);
+                        scanProperties.PortRangeEnd.RemovetValidationError();
                         ValidatePortRangeEnd();
                     }
                 }
                 else
                 {
-                    logger.Error($"Port range start \"{scanPropertiesView.PortRangeStart.Input.Text}\" must be a number within the range of 1 - 65535");
-                    scanPropertiesView.HighlightValidationError(scanPropertiesView.PortRangeStart);
-                    scanPropertiesView.PortRangeStart.IsValid = false;
+                    logger.Error($"Port range start \"{scanProperties.PortRangeStart.Input.Text}\" must be a number within the range of 1 - 65535");
+                    scanProperties.PortRangeStart.Error();
 
-                    if (scanPropertiesView.PortRangeEnd.IsValid)
+                    if (scanProperties.PortRangeEnd.IsValid)
                     {
-                        scanPropertiesView.HighlightValidationError(scanPropertiesView.PortRangeEnd);
-                        scanPropertiesView.PortRangeEnd.IsValid = false;
+                        scanProperties.PortRangeEnd.Error();
                     }
                 }  
             }
@@ -241,21 +233,20 @@ namespace PortSniffer.Presenter
         /// <param name="e">Event arguments</param>
         private void OnPortRangeEndValidation(object? sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(scanPropertiesView.PortRangeEnd.Input.Text.Trim()))
+            if (string.IsNullOrEmpty(scanProperties.PortRangeEnd.Input.Text.Trim()))
             {
-                scanPropertiesView.PortRangeEnd.Reset();
+                scanProperties.PortRangeEnd.Reset();
             }
             else
             {
-                if (scanPropertiesView.PortRangeStart.IsValid)
+                if (scanProperties.PortRangeStart.IsValid)
                 {
                     ValidatePortRangeEnd();
                 }
                 else
                 {
                     logger.Warn($"Please set valid port range-start before setting the range-end");
-                    scanPropertiesView.HighlightValidationError(scanPropertiesView.PortRangeEnd);
-                    scanPropertiesView.PortRangeEnd.IsValid = false;
+                    scanProperties.PortRangeEnd.Error();
                 }     
             }
         }
@@ -267,23 +258,22 @@ namespace PortSniffer.Presenter
         /// <param name="e">Event arguments</param>
         private void OnMaximumConcurrentScansValidation(object? sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(scanPropertiesView.MaximumConcurrentScans.Input.Text.Trim()))
+            if (string.IsNullOrEmpty(scanProperties.MaximumConcurrentScans.Input.Text.Trim()))
             {
-                scanPropertiesView.MaximumConcurrentScans.Reset();
+                scanProperties.MaximumConcurrentScans.Reset();
             }
             else
             {
-                if (int.TryParse(scanPropertiesView.MaximumConcurrentScans.Input.Text, out int max) && max > 0)
+                if (int.TryParse(scanProperties.MaximumConcurrentScans.Input.Text, out int max) && max > 0)
                 {
-                    scanPropertiesView.MaximumConcurrentScans.MaxThreadCount = max;
-                    scanPropertiesView.MaximumConcurrentScans.IsValid = true;
-                    logger.Log($"Successfully set maximum concurrent scans to {scanPropertiesView.MaximumConcurrentScans.Input.Text}");
+                    scanProperties.MaximumConcurrentScans.MaxThreadCount = max;
+                    scanProperties.MaximumConcurrentScans.IsValid = true;
+                    logger.Log($"Successfully set maximum concurrent scans to {scanProperties.MaximumConcurrentScans.Input.Text}");
                 }
                 else
                 {
-                    logger.Error($"Maximum concurrent scans \"{scanPropertiesView.MaximumConcurrentScans.Input.Text}\" must be a number greater than 0");
-                    scanPropertiesView.HighlightValidationError(scanPropertiesView.MaximumConcurrentScans);
-                    scanPropertiesView.MaximumConcurrentScans.IsValid = false;
+                    logger.Error($"Maximum concurrent scans \"{scanProperties.MaximumConcurrentScans.Input.Text}\" must be a number greater than 0");
+                    scanProperties.MaximumConcurrentScans.Error();
                 }
             }
         }
@@ -295,23 +285,22 @@ namespace PortSniffer.Presenter
         /// <param name="e">Event arguments</param>
         private void OnTimeoutValidation(object? sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(scanPropertiesView.Timeout.Input.Text.Trim()))
+            if (string.IsNullOrEmpty(scanProperties.Timeout.Input.Text.Trim()))
             {
-                scanPropertiesView.Timeout.Reset();
+                scanProperties.Timeout.Reset();
             }
             else
             {
-                if (int.TryParse(scanPropertiesView.Timeout.Input.Text, out int timeout) && timeout > 49)
+                if (int.TryParse(scanProperties.Timeout.Input.Text, out int timeout) && timeout > 49)
                 {
-                    scanPropertiesView.Timeout.Timeout = timeout;
-                    scanPropertiesView.Timeout.IsValid = true;
-                    logger.Log($"Successfully set timeout to {scanPropertiesView.Timeout.Input.Text}");
+                    scanProperties.Timeout.Timeout = timeout;
+                    scanProperties.Timeout.IsValid = true;
+                    logger.Log($"Successfully set timeout to {scanProperties.Timeout.Input.Text}");
                 }
                 else
                 {
-                    logger.Error($"Timeout \"{scanPropertiesView.Timeout.Input.Text}\" must be a number (50+)");
-                    scanPropertiesView.HighlightValidationError(scanPropertiesView.Timeout);
-                    scanPropertiesView.Timeout.IsValid = false;
+                    logger.Error($"Timeout \"{scanProperties.Timeout.Input.Text}\" must be a number (50+)");
+                    scanProperties.Timeout.Error();
                 }
             }
         }
@@ -322,27 +311,27 @@ namespace PortSniffer.Presenter
 
             if (property.Input.Checked)
             {
-                if (scanPropertiesView.OnlyWellKnownPorts.Input.Checked && !(scanPropertiesView.OnlyWellKnownPorts == property)) scanPropertiesView.OnlyWellKnownPorts.Input.Checked = false;
-                if (scanPropertiesView.OnlyPrivatePorts.Input.Checked && !(scanPropertiesView.OnlyPrivatePorts == property)) scanPropertiesView.OnlyPrivatePorts.Input.Checked = false;
-                if (scanPropertiesView.OnlyRegisteredPorts.Input.Checked && !(scanPropertiesView.OnlyRegisteredPorts == property)) scanPropertiesView.OnlyRegisteredPorts.Input.Checked = false;
-                if (scanPropertiesView.AllPorts.Input.Checked && !(scanPropertiesView.AllPorts == property)) scanPropertiesView.AllPorts.Input.Checked = false;
+                if (scanProperties.OnlyWellKnownPorts.Input.Checked && !(scanProperties.OnlyWellKnownPorts == property)) scanProperties.OnlyWellKnownPorts.Input.Checked = false;
+                if (scanProperties.OnlyPrivatePorts.Input.Checked && !(scanProperties.OnlyPrivatePorts == property)) scanProperties.OnlyPrivatePorts.Input.Checked = false;
+                if (scanProperties.OnlyRegisteredPorts.Input.Checked && !(scanProperties.OnlyRegisteredPorts == property)) scanProperties.OnlyRegisteredPorts.Input.Checked = false;
+                if (scanProperties.AllPorts.Input.Checked && !(scanProperties.AllPorts == property)) scanProperties.AllPorts.Input.Checked = false;
 
-                scanPropertiesView.PortRangeStart.Reset();
-                scanPropertiesView.PortRangeEnd.Reset();
-                scanPropertiesView.PortRangeStart.Input.Text = property.PredefinedPortsStart.ToString();
-                scanPropertiesView.PortRangeEnd.Input.Text = property.PredefinedPortsEnd.ToString();
-                scanPropertiesView.PortRangeStart.IsValid = true;
-                scanPropertiesView.PortRangeEnd.IsValid = true;
-                scanPropertiesView.PortRangeStart.Input.Enabled = false;
-                scanPropertiesView.PortRangeEnd.Input.Enabled = false;
+                scanProperties.PortRangeStart.Reset();
+                scanProperties.PortRangeEnd.Reset();
+                scanProperties.PortRangeStart.Input.Text = property.PredefinedPortsStart.ToString();
+                scanProperties.PortRangeEnd.Input.Text = property.PredefinedPortsEnd.ToString();
+                scanProperties.PortRangeStart.IsValid = true;
+                scanProperties.PortRangeEnd.IsValid = true;
+                scanProperties.PortRangeStart.Input.Enabled = false;
+                scanProperties.PortRangeEnd.Input.Enabled = false;
                 logger.Log($"Enabled predefined ports: {property.PredefinedPortsStart} - {property.PredefinedPortsEnd}");
             }
             else
             {
-                scanPropertiesView.PortRangeStart.Input.Enabled = true;
-                scanPropertiesView.PortRangeEnd.Input.Enabled = true;
-                scanPropertiesView.PortRangeStart.Reset();
-                scanPropertiesView.PortRangeEnd.Reset();
+                scanProperties.PortRangeStart.Input.Enabled = true;
+                scanProperties.PortRangeEnd.Input.Enabled = true;
+                scanProperties.PortRangeStart.Reset();
+                scanProperties.PortRangeEnd.Reset();
                 logger.Log($"Disabled predefined ports, custom range will be used");
             }
         }

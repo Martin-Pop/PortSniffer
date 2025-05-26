@@ -1,4 +1,5 @@
 ﻿using PortSniffer.Core.Config;
+using PortSniffer.Core.Interface;
 using PortSniffer.View.Abstract;
 using PortSniffer.View.Controls;
 using PortSniffer.View.Interface;
@@ -7,7 +8,7 @@ using PortSniffer.View.ScanProperties;
 
 namespace PortSniffer.View.Sections
 {
-    public class ScanPropertiesView : PanelAbstract, IScanPropertiesView
+    public class ScanPropertiesView : PanelAbstract, IScanProperties
     {
         private TableLayoutPanel scanProperties;
         public IPAddressProperty TargetIP { get; private set; }
@@ -147,25 +148,6 @@ namespace PortSniffer.View.Sections
             scanProperties.Controls.Add(AllPorts);
             scanProperties.Controls.Add(MaximumConcurrentScans);
             scanProperties.Controls.Add(Timeout);
-        }
-
-        /// <summary>
-        /// Changes the color of the control to indicate a validation error.
-        /// </summary>
-        /// <param name="property">Control that gets visual changes</param>
-        public void HighlightValidationError(ScanPropertyInputAbstract property)
-        {
-            //TODO: make this blink -yeah idk maybe not, just add these colors from config maybe?
-            property.Input.BackColor = Color.FromArgb(255, 222, 222);
-        }
-
-        /// <summary>
-        /// Removes the highlight from the control.
-        /// </summary>
-        /// <param name="property"></param>
-        public void RemoveHighlightValidationError(ScanPropertyInputAbstract property)
-        {
-            property.Input.BackColor = Color.White;
         }
 
         /// <summary>
