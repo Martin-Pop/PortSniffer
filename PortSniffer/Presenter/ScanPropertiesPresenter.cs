@@ -324,6 +324,8 @@ namespace PortSniffer.Presenter
                 scanProperties.PortRangeEnd.IsValid = true;
                 scanProperties.PortRangeStart.Input.Enabled = false;
                 scanProperties.PortRangeEnd.Input.Enabled = false;
+                scanProperties.PortRangeStart.Port = property.PredefinedPortsStart;
+                scanProperties.PortRangeEnd.Port = property.PredefinedPortsEnd;
                 logger.Log($"Enabled predefined ports: {property.PredefinedPortsStart} - {property.PredefinedPortsEnd}");
             }
             else

@@ -13,11 +13,23 @@ using System.Threading.Tasks;
 
 namespace PortSniffer.Presenter
 {
+    public enum ScaningState
+    {
+        RUNNING,
+        PAUSED,
+        STOPPED,
+        IDLE,
+        SUSPENDED
+    }
     public class ControlPanelPresenter
     {
         private readonly IControlPanelView controlPanelView;
         private readonly IScanProperties scanProperties;
         private readonly IConsoleLogger logger;
+
+        private readonly PortScanner portScanner = new PortScanner();
+
+        public ScaningState scanState {  get; private set; }
 
         public ControlPanelPresenter(IControlPanelView controlPanelView, IScanProperties scanProperties, IConsoleLogger logger)
         {
@@ -56,8 +68,9 @@ namespace PortSniffer.Presenter
             }
         }
 
-        private void Start_Click(object? sender, EventArgs e)
+        private async void Start_Click(object? sender, EventArgs e)
         {
+            
             if (CanStartScanning())
             {
                 //IP
@@ -102,18 +115,34 @@ namespace PortSniffer.Presenter
                     scanProperties.MaximumConcurrentScans.MaxThreadCount
                 );
 
-                logger.Log("Successfully created scan configuration");
+                logger.Log($"{scanProperties.PortRangeStart.Port}");
+                logger.Log($"{scanProperties.PortRangeEnd.Port}");
+
+                //foreach (var ip in scanConfig.IPAddresses)
+                //{
+                //    logger.Log($"IP: {ip}");
+                //}
+
+                //foreach (var port in scanConfig.Ports)
+                //{
+                //    logger.Log($"Port: {port}");
+                //}
+
+                logger.Log("Starting Scanning");
+                await portScanner.StartScanAsync(scanConfig);
+                logger.Log("Scanning finished successfully");
 
 
             }
-
-            //bool result = CreateScanConfiguration();
         }
 
-        private void Stop_Click(object? sender, EventArgs e)
+        private async void Stop_Click(object? sender, EventArgs e)
         {
-            // Handle stop button click
-            // Example: Stop scanning or processing
+            Debug.WriteLine("Before delay");
+            logger.Log("before");
+            await Task.Delay(3000);
+            Debug.WriteLine("After delay");
+            logger.Log("after");
         }
 
         private void PauseResume_Click(object? sender, EventArgs e)

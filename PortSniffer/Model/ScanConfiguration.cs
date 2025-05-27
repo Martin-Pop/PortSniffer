@@ -20,5 +20,13 @@ namespace PortSniffer.Model
             this.timeout = timeout;
             this.maxThreads = maxThreads;
         }
+
+        public List<IPAddress> IPAddresses => iPAddresses;
+
+        public List<int> Ports => ports;
+
+        public int Timeout => timeout;
+
+        public int MaxThreads => maxThreads;
     }
 }
