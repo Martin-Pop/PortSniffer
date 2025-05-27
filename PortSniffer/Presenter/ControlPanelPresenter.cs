@@ -4,7 +4,10 @@ using PortSniffer.View.Abstract;
 using PortSniffer.View.Interface;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Net;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -38,17 +41,73 @@ namespace PortSniffer.Presenter
             return null;
         }
 
-        private void Start_Click(object? sender, EventArgs e)
+        private bool CanStartScanning()
         {
-            if (!scanProperties.TargetIP.IsValid || !scanProperties.PortRangeStart.IsValid)
+            if(scanProperties.TargetIP.IsValid && scanProperties.PortRangeStart.IsValid)
+            {
+                return true;
+            }
+            else
             {
                 scanProperties.TargetIP.Error();
                 scanProperties.PortRangeStart.Error();
                 logger.Error("Can not strat scaning: Required properties are invalid");
+                return false;
+            }
+        }
+
+        private void Start_Click(object? sender, EventArgs e)
+        {
+            if (CanStartScanning())
+            {
+                //IP
+                IPAddress[] range = new IPAddress[2];
+
+                if (scanProperties.SubnetMask.IsValid)
+                {
+                    range = IPUtilities.MaskToRange(scanProperties.TargetIP.IpAddress, scanProperties.SubnetMask.IpAddress);
+                }
+                else
+                {
+                    range[0] = scanProperties.TargetIP.IpAddress;
+                    range[1] = scanProperties.TargetIPRangeEnd.IpAddress;
+                }
+
+                List<IPAddress> ips = new List<IPAddress>();
+                if (scanProperties.TargetIPRangeEnd.IsValid || scanProperties.SubnetMask.IsValid)
+                {
+                    ips = IPUtilities.GetIPAddressesFromRange(range[0], range[1]);
+                }
+                else
+                {
+                    ips = new List<IPAddress>() { range[0] };
+                }
+
+                // Ports
+                List<int> ports = new List<int>();
+
+                if (scanProperties.PortRangeEnd.IsValid)
+                {
+                    ports = IPUtilities.RangeToPortList(scanProperties.PortRangeStart.Port, scanProperties.PortRangeEnd.Port);
+                }
+                else
+                {
+                    ports = new List<int> { scanProperties.PortRangeStart.Port };
+                }
+
+                ScanConfiguration scanConfig = new ScanConfiguration(
+                    ips,
+                    ports,
+                    scanProperties.Timeout.Timeout,
+                    scanProperties.MaximumConcurrentScans.MaxThreadCount
+                );
+
+                logger.Log("Successfully created scan configuration");
+
+
             }
 
-
-           //bool result = CreateScanConfiguration();
+            //bool result = CreateScanConfiguration();
         }
 
         private void Stop_Click(object? sender, EventArgs e)

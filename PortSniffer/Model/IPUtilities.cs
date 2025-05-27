@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -65,6 +66,8 @@ namespace PortSniffer.Model
 
             uint s = IpToUint32(start);
             uint e = IpToUint32(end);
+
+            Debug.WriteLine(e - s);
 
             for (uint i = s; i <= e; i++)
             {
@@ -157,6 +160,43 @@ namespace PortSniffer.Model
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Creates a range from first useable adress to last usable adress from provided IP and subnet mask.
+        /// </summary>
+        /// <remarks>provided ip and mask must be correct</remarks>
+        /// <param name="ip">providede IP</param>
+        /// <param name="mask">provided subnet mask</param>
+        /// <returns>array with range start at index 0 and range end at index 1</returns>
+        public static IPAddress[] MaskToRange(IPAddress ip, IPAddress mask)
+        {
+            uint ipUint = IpToUint32(ip);
+            uint maskUint = IpToUint32(mask);
+
+            uint rangeStart = ipUint & maskUint; // bitwise AND to get the network address
+            uint rangeEnd = rangeStart | ~maskUint; // bitwise OR with the inverted mask to get the broadcast address
+
+            return [Uint32ToIp(rangeStart+1), Uint32ToIp(rangeEnd-1)];        
+        }
+
+        //PORTS
+
+        /// <summary>
+        /// Crates a list of ports from provided range.
+        /// </summary>
+        /// <param name="rangeStart">first port in the range</param>
+        /// <param name="rangeEnd">last port in the range</param>
+        /// <returns>A list of ports that will be scanned</returns>
+        public static List<int> RangeToPortList(int rangeStart, int rangeEnd)
+        {
+            List<int> ports = new List<int>();
+            for (int i = rangeStart; i <= rangeEnd ; i++)
+            {
+                ports.Add(i);
+            }
+
+            return ports;
         }
     }
 }
