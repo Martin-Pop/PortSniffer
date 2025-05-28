@@ -15,7 +15,7 @@ namespace PortSniffer.View.Abstract
         public Label Label { get; init; }
         public PropertyTooltip Tooltip { get; init; }
         public CheckBox Input { get; protected set; }
-        public bool IsValid { get; set; }
+        //public bool IsValid { get; set; }
         public ScanPropertyCheckBoxAbstract(string label, string toolTipMessage, Settings settings) : base(settings)
         {
             //this
@@ -53,7 +53,7 @@ namespace PortSniffer.View.Abstract
 
             Controls.Add(labelPanel);
 
-            IsValid = false;
+            //IsValid = false;
             //Input.CheckedChanged += HandleInput;
 
         }

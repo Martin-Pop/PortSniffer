@@ -23,7 +23,7 @@ namespace PortSniffer.View.Sections
         public PredefinedPortsProperty OnlyPrivatePorts { get; private set; }
         public PredefinedPortsProperty AllPorts { get; private set; }
 
-        public ScanPropertiesView(Settings settings): base(settings)
+        public ScanPropertiesView(Settings settings) : base(settings)
         {
             AutoSize = true;
             Dock = DockStyle.Fill;
@@ -163,7 +163,25 @@ namespace PortSniffer.View.Sections
                 }
             }
         }
-    }
 
+        /// <summary>
+        /// Resets all scan properties to their default state.
+        /// </summary>
+        public void ClearAll()
+        {
+            foreach (Control control in scanProperties.Controls)
+            {
+                if (control is ScanPropertyInputAbstract inputProperty)
+                {
+                    inputProperty.Reset();
+                }
+
+                if (control is ScanPropertyCheckBoxAbstract checkboxProperty)
+                {
+                    checkboxProperty.Input.Checked = false; //yes this will trigger the validation events .... ╰（‵□′）╯
+                }
+            }
+        }
+    }
 
 }

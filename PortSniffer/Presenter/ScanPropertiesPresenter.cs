@@ -305,6 +305,11 @@ namespace PortSniffer.Presenter
             }
         }
 
+        /// <summary>
+        /// Hnalder for the predefined ports changed event.
+        /// </summary>
+        /// <param name="sender">Source of the event</param>
+        /// <param name="e">Event aguments</param>
         private void OnPredefinedPortsChanged(object? sender, EventArgs e)
         {
             if (sender is not PredefinedPortsProperty property) return;

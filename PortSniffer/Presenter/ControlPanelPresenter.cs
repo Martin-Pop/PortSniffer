@@ -1,4 +1,5 @@
-﻿using PortSniffer.Core.Interface;
+﻿using PortSniffer.Core;
+using PortSniffer.Core.Interface;
 using PortSniffer.Model;
 using PortSniffer.View.Abstract;
 using PortSniffer.View.Interface;
@@ -10,17 +11,10 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
 namespace PortSniffer.Presenter
 {
-    public enum ScaningState
-    {
-        RUNNING,
-        PAUSED,
-        STOPPED,
-        IDLE,
-        SUSPENDED
-    }
     public class ControlPanelPresenter
     {
         private readonly IControlPanelView controlPanelView;
@@ -31,26 +25,70 @@ namespace PortSniffer.Presenter
 
         public ScaningState scanState {  get; private set; }
 
-        public ControlPanelPresenter(IControlPanelView controlPanelView, IScanProperties scanProperties, IConsoleLogger logger)
+        public ControlPanelPresenter(IControlPanelView controlPanelView, IScanProperties scanProperties, IConsoleLogger logger, PortScanner portScanner)
         {
             this.controlPanelView = controlPanelView;
             this.scanProperties = scanProperties;
             this.logger = logger;
+            this.portScanner = portScanner;
 
             // events
             controlPanelView.Start.Click += Start_Click;
             controlPanelView.Stop.Click += Stop_Click;
             controlPanelView.PauseResume.Click += PauseResume_Click;
             controlPanelView.Clear.Click += Clear_Click;
+
+            portScanner.OpenPortsFoundEvent += (result) =>
+            {
+                logger.Log($"Open ports found for {result.IPAddress}: {string.Join(", ", result.OpenPorts)}");
+            };
         }
 
 
-        private ScanConfiguration? CreateScanConfiguration()
+        private ScanConfiguration CreateScanConfiguration()
         {
-            // Example: Create a scan configuration based on user input
-            // This method can be expanded to gather data from the view and create a ScanConfig object
-            // var config = new ScanConfig(addresses, ports, timeOut, maxThreads);
-            return null;
+            IPAddress[] range = new IPAddress[2];
+
+            if (scanProperties.SubnetMask.IsValid)
+            {
+                range = IPUtilities.MaskToRange(scanProperties.TargetIP.IpAddress, scanProperties.SubnetMask.IpAddress);
+            }
+            else
+            {
+                range[0] = scanProperties.TargetIP.IpAddress;
+                range[1] = scanProperties.TargetIPRangeEnd.IpAddress;
+            }
+
+            List<IPAddress> ips = new List<IPAddress>();
+            if (scanProperties.TargetIPRangeEnd.IsValid || scanProperties.SubnetMask.IsValid)
+            {
+                ips = IPUtilities.GetIPAddressesFromRange(range[0], range[1]);
+            }
+            else
+            {
+                ips = new List<IPAddress>() { range[0] };
+            }
+
+            // Ports
+            List<int> ports = new List<int>();
+
+            if (scanProperties.PortRangeEnd.IsValid)
+            {
+                ports = IPUtilities.RangeToPortList(scanProperties.PortRangeStart.Port, scanProperties.PortRangeEnd.Port);
+            }
+            else
+            {
+                ports = new List<int> { scanProperties.PortRangeStart.Port };
+            }
+
+            ScanConfiguration scanConfig = new ScanConfiguration(
+                ips,
+                ports,
+                scanProperties.Timeout.Timeout,
+                scanProperties.MaximumConcurrentScans.MaxThreadCount
+            );
+
+            return scanConfig;
         }
 
         private bool CanStartScanning()
@@ -70,91 +108,81 @@ namespace PortSniffer.Presenter
 
         private async void Start_Click(object? sender, EventArgs e)
         {
-            
-            if (CanStartScanning())
-            {
-                //IP
-                IPAddress[] range = new IPAddress[2];
-
-                if (scanProperties.SubnetMask.IsValid)
+            if (portScanner.ScanState == ScaningState.IDLE)
+            { 
+                if (CanStartScanning())
                 {
-                    range = IPUtilities.MaskToRange(scanProperties.TargetIP.IpAddress, scanProperties.SubnetMask.IpAddress);
+                    ScanConfiguration scanConfiguration = CreateScanConfiguration();
+
+                    long ops =  (long) scanConfiguration.Ports.Count * scanConfiguration.IPAddresses.Count * scanConfiguration.Timeout / scanConfiguration.MaxThreads;
+                    var estimatedTime = TimeSpan.FromMilliseconds(ops);
+
+                    if (estimatedTime.TotalHours > 1)
+                    {
+                        logger.Warn("The estimated scan time is over an hour. To speed it up, try increasing the 'Max Concurrent Scans' value or lowering the 'Timeout' setting.");
+                    }
+
+                    if (estimatedTime.TotalDays > 1)
+                    {
+                        logger.Warn("Your scan will take more than a day! This is not recomended!!");
+                    }
+
+                    //chatgpt helped with this D2 formating, - it means decimal, always 2 digits
+                    logger.Log($"Estimated time for scan: {(int)estimatedTime.TotalHours:D2}:{estimatedTime.Minutes:D2}:{estimatedTime.Seconds:D2} minutes");
+                    logger.Log("Starting Scanning at " + Utils.TimeNow());
+
+                    controlPanelView.Start.Enabled = false;
+                    controlPanelView.Stop.Enabled = true;
+                    controlPanelView.PauseResume.Enabled = true;
+
+                    await portScanner.StartScanAsync(scanConfiguration);
+
+                    if (portScanner.ScanState == ScaningState.IDLE)
+                    {
+                        logger.Log("Scanning finished successfully");
+                    }
+                    else
+                    {
+                        logger.Log("Scanning has ended");
+                    }
+
+                    controlPanelView.Start.Enabled = true;
+                    portScanner.ScanState = ScaningState.IDLE;
                 }
-                else
-                {
-                    range[0] = scanProperties.TargetIP.IpAddress;
-                    range[1] = scanProperties.TargetIPRangeEnd.IpAddress;
-                }
-
-                List<IPAddress> ips = new List<IPAddress>();
-                if (scanProperties.TargetIPRangeEnd.IsValid || scanProperties.SubnetMask.IsValid)
-                {
-                    ips = IPUtilities.GetIPAddressesFromRange(range[0], range[1]);
-                }
-                else
-                {
-                    ips = new List<IPAddress>() { range[0] };
-                }
-
-                // Ports
-                List<int> ports = new List<int>();
-
-                if (scanProperties.PortRangeEnd.IsValid)
-                {
-                    ports = IPUtilities.RangeToPortList(scanProperties.PortRangeStart.Port, scanProperties.PortRangeEnd.Port);
-                }
-                else
-                {
-                    ports = new List<int> { scanProperties.PortRangeStart.Port };
-                }
-
-                ScanConfiguration scanConfig = new ScanConfiguration(
-                    ips,
-                    ports,
-                    scanProperties.Timeout.Timeout,
-                    scanProperties.MaximumConcurrentScans.MaxThreadCount
-                );
-
-                logger.Log($"{scanProperties.PortRangeStart.Port}");
-                logger.Log($"{scanProperties.PortRangeEnd.Port}");
-
-                //foreach (var ip in scanConfig.IPAddresses)
-                //{
-                //    logger.Log($"IP: {ip}");
-                //}
-
-                //foreach (var port in scanConfig.Ports)
-                //{
-                //    logger.Log($"Port: {port}");
-                //}
-
-                logger.Log("Starting Scanning");
-                await portScanner.StartScanAsync(scanConfig);
-                logger.Log("Scanning finished successfully");
-
-
             }
         }
 
-        private async void Stop_Click(object? sender, EventArgs e)
+        private void Stop_Click(object? sender, EventArgs e)
         {
-            Debug.WriteLine("Before delay");
-            logger.Log("before");
-            await Task.Delay(3000);
-            Debug.WriteLine("After delay");
-            logger.Log("after");
+            portScanner.CancelScan();
+
+            controlPanelView.Start.Enabled = true;
+            controlPanelView.Stop.Enabled = false;
+            controlPanelView.PauseResume.Enabled = false;
+            controlPanelView.PauseResume.Text = "Pause";
+
+            logger.Log("Scanning manually stopped by user at " + Utils.TimeNow());
         }
 
         private void PauseResume_Click(object? sender, EventArgs e)
         {
-            // Handle pause/resume button click
-            // Example: Pause or resume scanning or processing
+            if (portScanner.ScanState == ScaningState.RUNNING)
+            {
+                portScanner.PauseScan();
+                controlPanelView.PauseResume.Text = "Resume";
+                logger.Log("Scanning paused at "+Utils.TimeNow());
+            }
+            else if (portScanner.ScanState == ScaningState.SUSPENDED)
+            {
+                portScanner.ResumeScan();
+                controlPanelView.PauseResume.Text = "Pause";
+                logger.Log("Scanning resumed at" +Utils.TimeNow());
+            }
         }
 
         private void Clear_Click(object? sender, EventArgs e)
         {
-            // Handle clear button click
-            // Example: Clear the console or results
+           //TODO: make this x_x
         }
     }
 }

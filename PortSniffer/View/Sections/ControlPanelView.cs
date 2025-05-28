@@ -35,6 +35,7 @@ namespace PortSniffer.View.Sections
             Stop.Dock = DockStyle.Fill;
             Stop.Height = 35;
             Stop.TextAlign = ContentAlignment.MiddleCenter;
+            Stop.Enabled = false;
 
             PauseResume = new Button();
             PauseResume.Text = "Pause";

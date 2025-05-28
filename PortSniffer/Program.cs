@@ -1,4 +1,5 @@
 using PortSniffer.Core.Config;
+using PortSniffer.Model;
 using PortSniffer.Presenter;
 //using PortSniffer.UI;
 using PortSniffer.View;
@@ -22,6 +23,9 @@ namespace PortSniffer
             SettingsManager settingsManager = new SettingsManager(Path.Combine(Application.StartupPath, "config.json"));
             settingsManager.SaveSettings(out string message);
 
+            //port scanner
+            PortScanner portScanner = new PortScanner();
+
             //main form
             MainForm mainForm = new MainForm();
 
@@ -35,7 +39,7 @@ namespace PortSniffer
 
             //scan controls
             ControlPanelView controlPanelView = new ControlPanelView(settingsManager.Settings);
-            ControlPanelPresenter controlPanelPresenter = new ControlPanelPresenter(controlPanelView, scanPropertiesView, outputConsolePresenter);
+            ControlPanelPresenter controlPanelPresenter = new ControlPanelPresenter(controlPanelView, scanPropertiesView, outputConsolePresenter, portScanner);
 
 
             //scan results
