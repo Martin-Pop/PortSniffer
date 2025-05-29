@@ -2,6 +2,7 @@
 using PortSniffer.Core.Interface;
 using PortSniffer.Model;
 using PortSniffer.View.Interface;
+using System.Diagnostics;
 using System.Net;
 
 namespace PortSniffer.Presenter
@@ -121,8 +122,19 @@ namespace PortSniffer.Presenter
                 {
                     ScanConfiguration scanConfiguration = CreateScanConfiguration();
 
-                    long ops =  (long) scanConfiguration.Ports.Count * scanConfiguration.IPAddresses.Count * scanConfiguration.Timeout / scanConfiguration.MaxThreads;
-                    var estimatedTime = TimeSpan.FromMilliseconds(ops);
+                    Debug.WriteLine(scanConfiguration.Ports.Count);
+                    Debug.WriteLine(scanConfiguration.IPAddresses.Count);
+                    Debug.WriteLine(scanConfiguration.Timeout);
+                    Debug.WriteLine(scanConfiguration.MaxThreads);
+                    Debug.WriteLine("------");
+                    Debug.WriteLine(scanConfiguration.Ports.Count / scanConfiguration.Timeout / scanConfiguration.MaxThreads);
+                    Debug.WriteLine((long)scanConfiguration.Ports.Count * scanConfiguration.Timeout / scanConfiguration.MaxThreads * scanConfiguration.IPAddresses.Count);
+
+                    var estimatedTime = TimeSpan.FromMilliseconds(
+                        Math.Ceiling((double)scanConfiguration.Ports.Count / scanConfiguration.MaxThreads)
+                        * scanConfiguration.Timeout
+                        * scanConfiguration.IPAddresses.Count
+                    );
 
                     if (estimatedTime.TotalHours > 1)
                     {
@@ -217,6 +229,7 @@ namespace PortSniffer.Presenter
                 controlPanelView.Stop.Enabled = true;
                 controlPanelView.PauseResume.Enabled = true;
                 controlPanelView.PauseResume.Text = "Pause";
+                controlPanelView.Clear.Enabled = false;
             }
             else if (state == ScaningState.IDLE)
             {
@@ -224,6 +237,7 @@ namespace PortSniffer.Presenter
                 controlPanelView.Stop.Enabled = false;
                 controlPanelView.PauseResume.Enabled = false;
                 controlPanelView.PauseResume.Text = "Pause";
+                controlPanelView.Clear.Enabled = true;
             }
         }
     }

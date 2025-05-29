@@ -41,11 +41,11 @@ namespace PortSniffer
             ControlPanelView controlPanelView = new ControlPanelView(settingsManager.Settings);
             ControlPanelPresenter controlPanelPresenter = new ControlPanelPresenter(controlPanelView, scanPropertiesView, outputConsolePresenter, portScanner);
 
-
             //scan results
-            //not yet :\
+            ScanResultsView scanResultsView = new ScanResultsView(settingsManager.Settings);
+            ScanResultsPresenter scanResultsPresenter = new ScanResultsPresenter(portScanner, scanResultsView, settingsManager.Settings);
 
-            mainForm.AddViews(scanPropertiesView, outputConsoleView, controlPanelView);
+            mainForm.AddViews(scanPropertiesView, outputConsoleView, controlPanelView, scanResultsView);
             Application.Run(mainForm);
 
             //TODO: make settings and new interface for reaplying settings? => settings form :weary: ?

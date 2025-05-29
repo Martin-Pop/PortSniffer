@@ -4,6 +4,9 @@ using PortSniffer.View.Interface;
 
 namespace PortSniffer.View.Sections
 {
+    /// <summary>
+    /// UI for the control panel, which contains buttons to start, stop, pause/resume, and clear the scan.
+    /// </summary>
     public class ControlPanelView : PanelAbstract, IControlPanelView
     {
         private readonly TableLayoutPanel tableLayoutPanel;
@@ -17,39 +20,49 @@ namespace PortSniffer.View.Sections
             Dock = DockStyle.Bottom;
             AutoSize = true;
 
-            tableLayoutPanel = new TableLayoutPanel();
-            tableLayoutPanel.RowCount = 3;
-            tableLayoutPanel.ColumnCount = 1;
-            tableLayoutPanel.Dock = DockStyle.Fill;
-            tableLayoutPanel.AutoSize = true;
-            tableLayoutPanel.AutoScroll = false;
+            tableLayoutPanel = new TableLayoutPanel()
+            {
+                RowCount = 4,
+                ColumnCount = 1,
+                Dock = DockStyle.Fill,
+                AutoSize = true,
+                AutoScroll = false
+            };
+
+            Start = new Button()
+            {
+                Text = "Start",
+                Dock = DockStyle.Fill,
+                Height = 35,
+                TextAlign = ContentAlignment.MiddleCenter
+            };
+
+            Stop = new Button()
+            {
+                Text = "Stop",
+                Dock = DockStyle.Fill,
+                Height = 35,
+                TextAlign = ContentAlignment.MiddleCenter,
+                Enabled = false
+            };
+
+            PauseResume = new Button()
+            {
+                Text = "Pause",
+                Dock = DockStyle.Fill,
+                Height = 35,
+                TextAlign = ContentAlignment.MiddleCenter,
+                Enabled = false
+            };
+
+            Clear = new Button()
+            {
+                Text = "Clear",
+                Dock = DockStyle.Fill,
+                Height = 35,
+                TextAlign = ContentAlignment.MiddleCenter
+            };
            
-            Start = new Button();
-            Start.Text = "Start";
-            Start.Dock = DockStyle.Fill;
-            Start.Height = 35;
-            Start.TextAlign = ContentAlignment.MiddleCenter;
-
-            Stop = new Button();
-            Stop.Text = "Stop";
-            Stop.Dock = DockStyle.Fill;
-            Stop.Height = 35;
-            Stop.TextAlign = ContentAlignment.MiddleCenter;
-            Stop.Enabled = false;
-
-            PauseResume = new Button();
-            PauseResume.Text = "Pause";
-            PauseResume.Dock = DockStyle.Fill;
-            PauseResume.Height = 35;
-            PauseResume.TextAlign = ContentAlignment.MiddleCenter;
-            PauseResume.Enabled = false;
-
-            Clear = new Button();
-            Clear.Text = "Clear";
-            Clear.Dock = DockStyle.Fill;
-            Clear.Height = 35;
-            Clear.TextAlign = ContentAlignment.MiddleCenter;
-
             ApplySettings();
 
             tableLayoutPanel.Controls.Add(Start);
@@ -58,20 +71,11 @@ namespace PortSniffer.View.Sections
             tableLayoutPanel.Controls.Add(Clear);
 
             Controls.Add(tableLayoutPanel);
-    
         }
 
-        //private void UpdateButtonWidths()
-        //{
-        //    foreach (Control control in flowLayoutPanel.Controls)
-        //    {
-        //        if (control is Button b)
-        //        {
-        //            b.Width = flowLayoutPanel.ClientSize.Width;
-        //        }
-        //    }
-        //}
-
+        /// <summary>
+        /// Applies settings to the controls (UI)
+        /// </summary>
         public override void ApplySettings()
         {
             Start.Font = new Font(Settings.FontFamily, Settings.FontSize, FontStyle.Regular);

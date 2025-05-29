@@ -33,7 +33,7 @@ namespace PortSniffer.View
             leftSplitContainer = new SplitContainer();
             leftSplitContainer.Dock = DockStyle.Fill;
             leftSplitContainer.Orientation = Orientation.Horizontal;
-            leftSplitContainer.Panel1.BackColor = Color.LightBlue;
+            //leftSplitContainer.Panel1.BackColor = Color.LightBlue;
 
             //topSplitContainer = new SplitContainer();
             //topSplitContainer.Dock = DockStyle.Fill;
@@ -46,11 +46,12 @@ namespace PortSniffer.View
             Controls.Add(mainSplitContainer);
         }
 
-        public void AddViews(ScanPropertiesView scanPropertiesView, OutputConsoleView outputConsoleView,ControlPanelView controlPanelView) //add other later (made so they are added to the correct panels)
+        public void AddViews(ScanPropertiesView scanPropertiesView, OutputConsoleView outputConsoleView,ControlPanelView controlPanelView, ScanResultsView scanResultsView) //add other later (made so they are added to the correct panels)
         {
             mainSplitContainer.Panel2.Controls.Add(scanPropertiesView);
-            leftSplitContainer.Panel2.Controls.Add(outputConsoleView);
             mainSplitContainer.Panel2.Controls.Add(controlPanelView);
+            leftSplitContainer.Panel2.Controls.Add(outputConsoleView);
+            leftSplitContainer.Panel1.Controls.Add(scanResultsView);
         }
 
     }

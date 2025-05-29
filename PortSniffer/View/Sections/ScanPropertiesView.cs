@@ -28,15 +28,15 @@ namespace PortSniffer.View.Sections
             AutoSize = true;
             Dock = DockStyle.Fill;
 
-            scanProperties = new TableLayoutPanel();
-            scanProperties.Dock = DockStyle.Fill;
-            scanProperties.AutoSize = false;
-            scanProperties.AutoScroll = true;
-            scanProperties.ColumnCount = 1;
-            scanProperties.RowCount = 20; //big enough to fit all controls so last one doesnt stretch
-
-            //inspired by this answer => https://stackoverflow.com/a/6555682
-            scanProperties.Padding = new Padding(0, 0, 1, 0); //supresses horizontal scrollbar!!!!
+            scanProperties = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                AutoSize = false,
+                AutoScroll = true,
+                ColumnCount = 1,
+                RowCount = 20,
+                Padding = new Padding(0, 0, 1, 0) //supresses horizontal scrollbar!!!! //inspired by this answer => https://stackoverflow.com/a/6555682
+            };
 
             InitializeControls();
 
@@ -88,7 +88,7 @@ namespace PortSniffer.View.Sections
             //MAXIMUM CONCURRENT SCANS
             MaximumConcurrentScans = new MaxConcurrentProperty(
                 "Maximum Concurrent Scans:",
-                "Optional. Maximum number of concurrent scans to run.",
+                "Optional. Maximum number of concurrent scans (on a single IP) to run.",
                 false,
                 Settings
             );

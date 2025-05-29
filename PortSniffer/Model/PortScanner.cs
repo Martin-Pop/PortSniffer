@@ -1,4 +1,5 @@
-﻿using PortSniffer.Presenter;
+﻿using PortSniffer.Core.Config;
+using PortSniffer.Presenter;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -30,6 +31,8 @@ namespace PortSniffer.Model
         
         private CancellationTokenSource cancelationTS;
         public ScaningState ScanState { get; set; } = ScaningState.IDLE;
+        public Settings Settings { get; internal set; }
+
         public event Action<ScanResult> OpenPortsFoundEvent;
 
         public PortScanner()
@@ -119,6 +122,7 @@ namespace PortSniffer.Model
 
                 await Task.WhenAll(portTasks);
 
+                Debug.WriteLine("ALL TASK FINISHED");
                 if (openPorts.Count > 0)
                 {
                     ScanResult scanResult = new ScanResult(ip.ToString(), openPorts);
