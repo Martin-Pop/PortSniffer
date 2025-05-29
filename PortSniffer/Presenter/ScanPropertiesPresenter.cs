@@ -24,6 +24,7 @@ namespace PortSniffer.Presenter
             scanProperties.PortRangeEnd.ValidationEvent += OnPortRangeEndValidation;
             scanProperties.MaximumConcurrentScans.ValidationEvent += OnMaximumConcurrentScansValidation;
             scanProperties.Timeout.ValidationEvent += OnTimeoutValidation;
+
             scanProperties.OnlyWellKnownPorts.StateChangedEvent += OnPredefinedPortsChanged;
             scanProperties.OnlyRegisteredPorts.StateChangedEvent += OnPredefinedPortsChanged;
             scanProperties.OnlyPrivatePorts.StateChangedEvent += OnPredefinedPortsChanged;

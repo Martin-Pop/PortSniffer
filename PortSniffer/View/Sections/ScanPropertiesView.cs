@@ -178,7 +178,7 @@ namespace PortSniffer.View.Sections
 
                 if (control is ScanPropertyCheckBoxAbstract checkboxProperty)
                 {
-                    checkboxProperty.Input.Checked = false; //yes this will trigger the validation events .... ╰（‵□′）╯
+                    checkboxProperty.Input.Checked = false; //yes this will trigger the validation events .... ( ˘︹˘ )
                 }
             }
         }

@@ -5,20 +5,21 @@ namespace PortSniffer.View.Controls
 {
     public class MaxConcurrentProperty : ScanPropertyInputAbstract
     {
-        public int MaxThreadCount { get; set; } = 100;
+        public int MaxThreadCount { get; set; }
 
         public MaxConcurrentProperty(string label, string toolTipMessage, bool required, Settings settings, string placeholder = "") : base(label, toolTipMessage, required, settings, placeholder)
         {
             IsValid = true;
+            MaxThreadCount = Settings.DefaultMaxThreads;
             Input.Text = MaxThreadCount.ToString();
         }
 
         public override void Reset()
         {
-            IsValid = false;
-            MaxThreadCount = 0;
+            IsValid = true;
+            MaxThreadCount = Settings.DefaultMaxThreads;
 
-            Input.Text = string.Empty;
+            Input.Text = MaxThreadCount.ToString();
             Input.BackColor = Color.White;
         }
     }

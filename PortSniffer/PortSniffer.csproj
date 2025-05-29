@@ -29,4 +29,8 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="View\ScanResults\" />
+  </ItemGroup>
+
 </Project>

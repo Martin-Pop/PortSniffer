@@ -50,5 +50,7 @@ namespace PortSniffer.Core.Interface
         PredefinedPortsProperty OnlyRegisteredPorts { get; }
         PredefinedPortsProperty OnlyPrivatePorts { get; }
         PredefinedPortsProperty AllPorts { get; }
+
+        void ClearAll();
     }
 }

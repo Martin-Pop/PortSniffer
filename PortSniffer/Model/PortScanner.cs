@@ -5,19 +5,24 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace PortSniffer.Model
 {
+    /// <summary>
+    /// Types (enum) of scan states.
+    /// </summary>
     public enum ScaningState
     {
         IDLE,
         SUSPENDED,
         RUNNING,
-        CANCELED
+        CANCELED,
+        FINISHED
     }
+
+    /// <summary>
+    /// Port scanner, handles the scanning.
+    /// </summary>
     public class PortScanner
     {
         private readonly ManualResetEvent pauseEvent = new ManualResetEvent(true);
@@ -32,11 +37,19 @@ namespace PortSniffer.Model
             
         }
 
-        private async Task<bool> ScanAsync(IPAddress ip, int port, int timeout)
+        /// <summary>
+        /// Scans a single IP address and port asynchronously, if cancelation token is requested, scan will stop.
+        /// </summary>
+        /// <param name="ip">Scanned IP</param>
+        /// <param name="port">Scanned port</param>
+        /// <param name="timeout">Scan timeout</param>
+        /// <param name="token">Cancelation token</param>
+        /// <returns>True if port is open, otherwise false</returns>
+        private async Task<bool> ScanAsync(IPAddress ip, int port, int timeout, CancellationToken token)
         {
             using TcpClient tcpClient = new TcpClient();
             Task connection = tcpClient.ConnectAsync(ip, port);
-            if (await Task.WhenAny(connection, Task.Delay(timeout)) == connection)
+            if ( await Task.WhenAny(connection, Task.Delay(timeout,token)) == connection)
             {
                 if (tcpClient.Connected)
                 {
@@ -46,6 +59,16 @@ namespace PortSniffer.Model
             return false;
         }
 
+        //TODO: after everything is finished add option for a thing to first filter hosts by pinging if they are alive (might be usefull for quick scan)
+        //TODO: might add % of how much is done. => better UX when pausing/stoping 
+
+        /// <summary>
+        /// Starts scanning, scanning will be done in parallel using the specified number of threads in the scanConfiguration (maximum threads waiting for responce from TCP client or Timeout).
+        /// If cancelation is requested, scan will stop immediately.
+        /// If pause event is set, the scan will pause after all currently scanned ports are proccessed => if there is a big timeout, the scan may take a while to pause.
+        /// </summary>
+        /// <param name="scanConfiguration">Configuration according to which it will scan</param>
+        /// <returns>Task (void)</returns>
         public async Task StartScanAsync(ScanConfiguration scanConfiguration)
         {
             if (ScanState != ScaningState.IDLE) return;
@@ -65,12 +88,10 @@ namespace PortSniffer.Model
                 {
                     if (token.IsCancellationRequested)
                     {
-                        Debug.WriteLine("Scan canceled");
                         ScanState = ScaningState.CANCELED;
                         return;
                     }
 
-                    //TODO: fix pause, add clear
                     await Task.Run(pauseEvent.WaitOne);
                     await semaphore.WaitAsync();
 
@@ -78,7 +99,7 @@ namespace PortSniffer.Model
                     {
                         try
                         {
-                            bool isOpen = await ScanAsync(ip, port, scanConfiguration.Timeout);
+                            bool isOpen = await ScanAsync(ip, port, scanConfiguration.Timeout, token);
                             if (isOpen)
                             {
                                 lock (_lock)
@@ -96,7 +117,6 @@ namespace PortSniffer.Model
                     portTasks.Add(task);
                 }
 
-                
                 await Task.WhenAll(portTasks);
 
                 if (openPorts.Count > 0)
@@ -104,27 +124,32 @@ namespace PortSniffer.Model
                     ScanResult scanResult = new ScanResult(ip.ToString(), openPorts);
                     OpenPortsFoundEvent?.Invoke(scanResult);
                 }
-                //Debug.WriteLine($"IP: {ip} - Open Ports: {string.Join(", ", openPorts)}");
             }
 
-            ScanState = ScaningState.IDLE;
-            Debug.WriteLine("Set to idle down");
+            ScanState = ScaningState.FINISHED;
         }
 
+        /// <summary>
+        /// Pauses the scan.
+        /// </summary>
         public void PauseScan()
         {    
             pauseEvent.Reset();
             ScanState = ScaningState.SUSPENDED;
-            //Debug.WriteLine("Scan paused");
         }
 
+        /// <summary>
+        /// Resumes the scan.
+        /// </summary>
         public void ResumeScan()
         {
             pauseEvent.Set();
             ScanState = ScaningState.RUNNING;
-            //Debug.WriteLine("Scan resumed");
         }
 
+        /// <summary>
+        /// Cancels the scan.
+        /// </summary>
         public void CancelScan()
         {
             cancelationTS?.Cancel();

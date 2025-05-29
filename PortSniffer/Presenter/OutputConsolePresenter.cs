@@ -1,4 +1,5 @@
 ﻿using PortSniffer.Core.Interface;
+using PortSniffer.View.Interface;
 using PortSniffer.View.Sections;
 using System;
 using System.Collections.Generic;
@@ -34,6 +35,11 @@ namespace PortSniffer.Presenter
         public void Error(string msg)
         {
             outputConsoleView.Write(msg, errorColor);
+        }
+
+        public void CLear()
+        {
+            outputConsoleView.Clear();
         }
     }
 }

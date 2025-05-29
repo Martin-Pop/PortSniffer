@@ -10,20 +10,21 @@ namespace PortSniffer.View.Controls
 {
     public class TimeoutProperty : ScanPropertyInputAbstract
     {
-        public int Timeout { get; set; } = 1000;
+        public int Timeout { get; set; }
 
         public TimeoutProperty(string label, string toolTipMessage, bool required, Settings settings, string placeholder = "") : base(label, toolTipMessage, required, settings, placeholder)
         {
             IsValid = true;
+            Timeout = Settings.DefautTimeout;
             Input.Text = Timeout.ToString();
         }
 
         public override void Reset()
         {
-            IsValid = false;
-            Timeout = 0;
+            IsValid = true;
+            Timeout = Settings.DefautTimeout;
 
-            Input.Text = string.Empty;
+            Input.Text = Timeout.ToString();
             Input.BackColor = Color.White;
         }
     }

@@ -1,20 +1,14 @@
 ﻿using PortSniffer.Core;
 using PortSniffer.Core.Interface;
 using PortSniffer.Model;
-using PortSniffer.View.Abstract;
 using PortSniffer.View.Interface;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Net;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
 namespace PortSniffer.Presenter
 {
+    /// <summary>
+    /// Presenter for the control panel
+    /// </summary>
     public class ControlPanelPresenter
     {
         private readonly IControlPanelView controlPanelView;
@@ -22,7 +16,6 @@ namespace PortSniffer.Presenter
         private readonly IConsoleLogger logger;
 
         private readonly PortScanner portScanner = new PortScanner();
-
         public ScaningState scanState {  get; private set; }
 
         public ControlPanelPresenter(IControlPanelView controlPanelView, IScanProperties scanProperties, IConsoleLogger logger, PortScanner portScanner)
@@ -38,6 +31,7 @@ namespace PortSniffer.Presenter
             controlPanelView.PauseResume.Click += PauseResume_Click;
             controlPanelView.Clear.Click += Clear_Click;
 
+            //TODO: make the ui for this and handle it in diffrente presenter.
             portScanner.OpenPortsFoundEvent += (result) =>
             {
                 logger.Log($"Open ports found for {result.IPAddress}: {string.Join(", ", result.OpenPorts)}");
@@ -45,6 +39,10 @@ namespace PortSniffer.Presenter
         }
 
 
+        /// <summary>
+        /// Creates a scan configuration based on the properties set in the scanProperties object, should be called only if required properties are valid.
+        /// </summary>
+        /// <returns>The scan configuration</returns>
         private ScanConfiguration CreateScanConfiguration()
         {
             IPAddress[] range = new IPAddress[2];
@@ -91,6 +89,10 @@ namespace PortSniffer.Presenter
             return scanConfig;
         }
 
+        /// <summary>
+        /// Checks if the required properties for starting a scan are valid.
+        /// </summary>
+        /// <returns>True if conditions are met, otherwise false</returns>
         private bool CanStartScanning()
         {
             if(scanProperties.TargetIP.IsValid && scanProperties.PortRangeStart.IsValid)
@@ -99,13 +101,18 @@ namespace PortSniffer.Presenter
             }
             else
             {
-                scanProperties.TargetIP.Error();
-                scanProperties.PortRangeStart.Error();
-                logger.Error("Can not strat scaning: Required properties are invalid");
+                if (!scanProperties.TargetIP.IsValid) scanProperties.TargetIP.Error();
+                if (!scanProperties.PortRangeStart.IsValid) scanProperties.PortRangeStart.Error();
+                logger.Error("Can not start scaning: Required properties are invalid");
                 return false;
             }
         }
 
+        /// <summary>
+        /// Handles the click event for the start button, creates scan configuration and starts the scanning process if conditions are met.
+        /// </summary>
+        /// <param name="sender">Source of the event</param>
+        /// <param name="e">Event arguments</param>
         private async void Start_Click(object? sender, EventArgs e)
         {
             if (portScanner.ScanState == ScaningState.IDLE)
@@ -128,42 +135,45 @@ namespace PortSniffer.Presenter
                     }
 
                     //chatgpt helped with this D2 formating, - it means decimal, always 2 digits
-                    logger.Log($"Estimated time for scan: {(int)estimatedTime.TotalHours:D2}:{estimatedTime.Minutes:D2}:{estimatedTime.Seconds:D2} minutes");
+                    logger.Log($"Estimated time for scan: {(int)estimatedTime.TotalHours:D2}:{estimatedTime.Minutes:D2}:{estimatedTime.Seconds:D2}");
                     logger.Log("Starting Scanning at " + Utils.TimeNow());
-
-                    controlPanelView.Start.Enabled = false;
-                    controlPanelView.Stop.Enabled = true;
-                    controlPanelView.PauseResume.Enabled = true;
+                    
+                    UpdateButtons(ScaningState.RUNNING);
 
                     await portScanner.StartScanAsync(scanConfiguration);
 
-                    if (portScanner.ScanState == ScaningState.IDLE)
+                    if (portScanner.ScanState == ScaningState.FINISHED)
                     {
                         logger.Log("Scanning finished successfully");
                     }
-                    else
+                    else if (portScanner.ScanState == ScaningState.CANCELED)
                     {
-                        logger.Log("Scanning has ended");
+                        logger.Log("Scanning was canceled by user");
                     }
 
-                    controlPanelView.Start.Enabled = true;
+                    UpdateButtons(ScaningState.IDLE);
                     portScanner.ScanState = ScaningState.IDLE;
                 }
             }
         }
 
+        /// <summary>
+        /// Hanlder for clicking the stop button, cancels the ongoing scan immediately.
+        /// </summary>
+        /// <param name="sender">Source of the event</param>
+        /// <param name="e">Event arguments</param>
         private void Stop_Click(object? sender, EventArgs e)
         {
             portScanner.CancelScan();
-
-            controlPanelView.Start.Enabled = true;
-            controlPanelView.Stop.Enabled = false;
-            controlPanelView.PauseResume.Enabled = false;
-            controlPanelView.PauseResume.Text = "Pause";
-
+            UpdateButtons(ScaningState.IDLE);
             logger.Log("Scanning manually stopped by user at " + Utils.TimeNow());
         }
 
+        /// <summary>
+        /// Handler for clicking the pause/resume button, pauses or resumes the scanning process based on the current state.
+        /// </summary>
+        /// <param name="sender">Source of the event</param>
+        /// <param name="e">Event arguments</param>
         private void PauseResume_Click(object? sender, EventArgs e)
         {
             if (portScanner.ScanState == ScaningState.RUNNING)
@@ -176,13 +186,45 @@ namespace PortSniffer.Presenter
             {
                 portScanner.ResumeScan();
                 controlPanelView.PauseResume.Text = "Pause";
-                logger.Log("Scanning resumed at" +Utils.TimeNow());
+                logger.Log("Scanning resumed at " +Utils.TimeNow());
             }
         }
 
+        /// <summary>
+        /// Handler for clicking the clear button, clears the logger and resets scan properties.
+        /// </summary>
+        /// <param name="sender">Source of the evetn</param>
+        /// <param name="e">Event arguments</param>
         private void Clear_Click(object? sender, EventArgs e)
         {
-           //TODO: make this x_x
+            //TODO: make this x_x
+            logger.CLear();
+            scanProperties.ClearAll();
+            UpdateButtons(ScaningState.IDLE);
+
+            portScanner.ScanState = ScaningState.IDLE;
+        }
+
+        /// <summary>
+        /// Updates buttons based on the current scanning state.
+        /// </summary>
+        /// <param name="state">State to use</param>
+        private void UpdateButtons(ScaningState state)
+        {
+            if (state == ScaningState.RUNNING) 
+            {
+                controlPanelView.Start.Enabled = false;
+                controlPanelView.Stop.Enabled = true;
+                controlPanelView.PauseResume.Enabled = true;
+                controlPanelView.PauseResume.Text = "Pause";
+            }
+            else if (state == ScaningState.IDLE)
+            {
+                controlPanelView.Start.Enabled = true;
+                controlPanelView.Stop.Enabled = false;
+                controlPanelView.PauseResume.Enabled = false;
+                controlPanelView.PauseResume.Text = "Pause";
+            }
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace PortSniffer.Core.Config
 {
@@ -17,5 +18,8 @@ namespace PortSniffer.Core.Config
         public string ConsoleBackgroundColor { get; set; } = "#fafafa";
         public string BackgroundColor { get; set; } = "#ededed";
         public string InputErrorHighlightColor { get; set; } = "#787474";
+
+        public int DefautTimeout { get; set; } = 500;
+        public int DefaultMaxThreads { get; set; } = 500;
     }
 }
