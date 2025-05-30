@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PortSniffer.Model
+namespace PortSniffer.Model.Scanner
 {
     public class ScanResult
     {

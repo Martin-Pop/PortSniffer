@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace PortSniffer.Core.Config
+namespace PortSniffer.Model.Config
 {
     /// <summary>
     /// Settings for the app, mainly visuals

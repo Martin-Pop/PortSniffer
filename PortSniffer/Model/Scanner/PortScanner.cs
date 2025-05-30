@@ -1,4 +1,4 @@
-﻿using PortSniffer.Core.Config;
+﻿using PortSniffer.Model.Config;
 using PortSniffer.Presenter;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 
-namespace PortSniffer.Model
+namespace PortSniffer.Model.Scanner
 {
     /// <summary>
     /// Types (enum) of scan states.
@@ -28,7 +28,7 @@ namespace PortSniffer.Model
     {
         private readonly ManualResetEvent pauseEvent = new ManualResetEvent(true);
         private readonly object _lock = new object();
-        
+
         private CancellationTokenSource cancelationTS;
         public ScaningState ScanState { get; set; } = ScaningState.IDLE;
         public Settings Settings { get; internal set; }
@@ -37,7 +37,7 @@ namespace PortSniffer.Model
 
         public PortScanner()
         {
-            
+
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace PortSniffer.Model
         {
             using TcpClient tcpClient = new TcpClient();
             Task connection = tcpClient.ConnectAsync(ip, port);
-            if ( await Task.WhenAny(connection, Task.Delay(timeout,token)) == connection)
+            if (await Task.WhenAny(connection, Task.Delay(timeout, token)) == connection)
             {
                 if (tcpClient.Connected)
                 {
@@ -115,7 +115,7 @@ namespace PortSniffer.Model
                         {
                             semaphore.Release();
                         }
-                    },token);
+                    }, token);
 
                     portTasks.Add(task);
                 }
@@ -137,7 +137,7 @@ namespace PortSniffer.Model
         /// Pauses the scan.
         /// </summary>
         public void PauseScan()
-        {    
+        {
             pauseEvent.Reset();
             ScanState = ScaningState.SUSPENDED;
         }

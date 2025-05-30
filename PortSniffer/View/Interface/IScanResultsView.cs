@@ -1,4 +1,4 @@
-﻿using PortSniffer.Model;
+﻿using PortSniffer.Model.Scanner;
 using PortSniffer.View.ScanResults;
 using System;
 using System.Collections.Generic;
@@ -12,5 +12,6 @@ namespace PortSniffer.View.Interface
     {
         void AddScanResult(ScanResultProperty scanResultProperty);
         void ViewScanResult(ScanResult result);
+        void ClearResults();
     }
 }

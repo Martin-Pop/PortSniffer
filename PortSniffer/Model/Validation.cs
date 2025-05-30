@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PortSniffer.Model
 {
-    public static class IPUtilities
+    public static class Validation
     {
         //IP
 

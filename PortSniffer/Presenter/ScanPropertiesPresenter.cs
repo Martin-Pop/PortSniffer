@@ -1,5 +1,5 @@
-﻿using PortSniffer.Core.Interface;
-using PortSniffer.Model;
+﻿using PortSniffer.Model;
+using PortSniffer.Model.Interface;
 using PortSniffer.View.Interface;
 using PortSniffer.View.Properties;
 using PortSniffer.View.Sections;
@@ -36,9 +36,9 @@ namespace PortSniffer.Presenter
         /// </summary>
         private void ValidateIPTargetRangeEnd()
         {
-            if (IPUtilities.ValidateIP(scanProperties.TargetIPRangeEnd.Input.Text, out IPAddress? ip))
+            if (Validation.ValidateIP(scanProperties.TargetIPRangeEnd.Input.Text, out IPAddress? ip))
             {
-                if (IPUtilities.IsGreaterThan(ip!, scanProperties.TargetIP.IpAddress))
+                if (Validation.IsGreaterThan(ip!, scanProperties.TargetIP.IpAddress))
                 {
                     scanProperties.TargetIPRangeEnd.IpAddress = ip!;
                     scanProperties.TargetIPRangeEnd.Input.Text = ip!.ToString();
@@ -103,7 +103,7 @@ namespace PortSniffer.Presenter
             }
             else
             {
-                if (IPUtilities.ValidateIP(scanProperties.TargetIP.Input.Text, out IPAddress? ip))
+                if (Validation.ValidateIP(scanProperties.TargetIP.Input.Text, out IPAddress? ip))
                 {
                     scanProperties.TargetIP.IpAddress = ip!;
                     scanProperties.TargetIP.Input.Text = ip!.ToString();
@@ -171,7 +171,7 @@ namespace PortSniffer.Presenter
             }
             else
             {
-                if (IPUtilities.ValidateSubnetMask(scanProperties.SubnetMask.Input.Text, out IPAddress? mask))
+                if (Validation.ValidateSubnetMask(scanProperties.SubnetMask.Input.Text, out IPAddress? mask))
                 {
                     scanProperties.SubnetMask.IpAddress = mask!;
                     scanProperties.SubnetMask.Input.Text = mask!.ToString();

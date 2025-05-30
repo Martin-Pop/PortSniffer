@@ -1,4 +1,4 @@
-﻿using PortSniffer.Core.Config;
+﻿using PortSniffer.Model.Config;
 using PortSniffer.View.Abstract;
 using PortSniffer.View.Interface;
 using System;
@@ -13,9 +13,14 @@ namespace PortSniffer.View.Sections
     /// <summary>
     /// UI for the output console, displays messages (logs, errors, warnings)
     /// </summary>
-    public class OutputConsoleView : PanelAbstract, IOutpuConsoleView
+    public class OutputConsoleView : PanelAbstract, IConsoleLogger
     {
         private readonly RichTextBox console;
+
+        private readonly Color LogColor;
+        private readonly Color ErrorColor;
+        private readonly Color WarnColor;
+
         public OutputConsoleView(Settings settings): base(settings)
         {
             Dock = DockStyle.Fill;
@@ -38,7 +43,7 @@ namespace PortSniffer.View.Sections
         /// </summary>
         /// <param name="msg">Message to write</param>
         /// <param name="color">Color the message</param>
-        public void Write(string msg, Color color)
+        private void Write(string msg, Color color)
         {
             if (console.IsDisposed) return;
 
@@ -52,7 +57,7 @@ namespace PortSniffer.View.Sections
             console.SelectionStart = console.TextLength;
             console.SelectionLength = 0;
 
-            console.SelectionColor = color; 
+            console.SelectionColor = color;
             console.AppendText(msg);
             console.SelectionColor = console.ForeColor;
 
@@ -61,14 +66,6 @@ namespace PortSniffer.View.Sections
             {
                 console.BeginInvoke(new Action(console.ScrollToCaret));
             }
-        }
-
-        /// <summary>
-        /// Clears the console output
-        /// </summary>
-        public void Clear()
-        {
-            console.Clear();
         }
 
         /// <summary>
@@ -89,6 +86,26 @@ namespace PortSniffer.View.Sections
         {
             console.Font = new Font(Settings.FontFamily, Settings.FontSize, FontStyle.Regular);
             console.BackColor = ColorTranslator.FromHtml(Settings.ConsoleBackgroundColor);
+        }
+
+        public void Warn(string msg)
+        {
+            Write(msg, WarnColor);
+        }
+
+        public void Log(string msg)
+        {
+            Write(msg, LogColor);
+        }
+
+        public void Error(string msg)
+        {
+            Write(msg, ErrorColor);
+        }
+
+        public void CLear()
+        {
+            console.Clear();
         }
     }
 }

@@ -1,5 +1,5 @@
-﻿using PortSniffer.Core.Config;
-using PortSniffer.Core.Interface;
+﻿using PortSniffer.Model.Config;
+using PortSniffer.Model.Interface;
 using PortSniffer.View.Abstract;
 using PortSniffer.View.Controls;
 using PortSniffer.View.Interface;

@@ -1,6 +1,7 @@
 ﻿using PortSniffer.Core;
-using PortSniffer.Core.Interface;
 using PortSniffer.Model;
+using PortSniffer.Model.Interface;
+using PortSniffer.Model.Scanner;
 using PortSniffer.View.Interface;
 using System.Diagnostics;
 using System.Net;
@@ -15,15 +16,18 @@ namespace PortSniffer.Presenter
         private readonly IControlPanelView controlPanelView;
         private readonly IScanProperties scanProperties;
         private readonly IConsoleLogger logger;
+        private readonly IScanResultsView scanResultsView;
 
         private readonly PortScanner portScanner = new PortScanner();
         public ScaningState scanState {  get; private set; }
 
-        public ControlPanelPresenter(IControlPanelView controlPanelView, IScanProperties scanProperties, IConsoleLogger logger, PortScanner portScanner)
+        public ControlPanelPresenter(IControlPanelView controlPanelView, IScanProperties scanProperties, IConsoleLogger logger,IScanResultsView scanResultsView, PortScanner portScanner)
         {
             this.controlPanelView = controlPanelView;
             this.scanProperties = scanProperties;
             this.logger = logger;
+            this.scanResultsView = scanResultsView;
+
             this.portScanner = portScanner;
 
             // events
@@ -50,7 +54,7 @@ namespace PortSniffer.Presenter
 
             if (scanProperties.SubnetMask.IsValid)
             {
-                range = IPUtilities.MaskToRange(scanProperties.TargetIP.IpAddress, scanProperties.SubnetMask.IpAddress);
+                range = Validation.MaskToRange(scanProperties.TargetIP.IpAddress, scanProperties.SubnetMask.IpAddress);
             }
             else
             {
@@ -61,7 +65,7 @@ namespace PortSniffer.Presenter
             List<IPAddress> ips = new List<IPAddress>();
             if (scanProperties.TargetIPRangeEnd.IsValid || scanProperties.SubnetMask.IsValid)
             {
-                ips = IPUtilities.GetIPAddressesFromRange(range[0], range[1]);
+                ips = Validation.GetIPAddressesFromRange(range[0], range[1]);
             }
             else
             {
@@ -73,7 +77,7 @@ namespace PortSniffer.Presenter
 
             if (scanProperties.PortRangeEnd.IsValid)
             {
-                ports = IPUtilities.RangeToPortList(scanProperties.PortRangeStart.Port, scanProperties.PortRangeEnd.Port);
+                ports = Validation.RangeToPortList(scanProperties.PortRangeStart.Port, scanProperties.PortRangeEnd.Port);
             }
             else
             {

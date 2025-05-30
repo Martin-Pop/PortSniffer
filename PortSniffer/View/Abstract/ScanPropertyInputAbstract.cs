@@ -1,4 +1,4 @@
-﻿using PortSniffer.Core.Config;
+﻿using PortSniffer.Model.Config;
 using PortSniffer.View.Interface;
 using PortSniffer.View.ScanProperties;
 using System;

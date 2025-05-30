@@ -1,5 +1,5 @@
-using PortSniffer.Core.Config;
-using PortSniffer.Model;
+using PortSniffer.Model.Config;
+using PortSniffer.Model.Scanner;
 using PortSniffer.Presenter;
 //using PortSniffer.UI;
 using PortSniffer.View;
@@ -31,19 +31,19 @@ namespace PortSniffer
 
             //output console
             OutputConsoleView outputConsoleView = new OutputConsoleView(settingsManager.Settings);
-            OutputConsolePresenter outputConsolePresenter = new OutputConsolePresenter(outputConsoleView);
+            //OutputConsolePresenter outputConsolePresenter = new OutputConsolePresenter(outputConsoleView);
 
             //scan properties
             ScanPropertiesView scanPropertiesView = new ScanPropertiesView(settingsManager.Settings);
-            ScanPropertiesPresenter scanPropertiesPresenter = new ScanPropertiesPresenter(scanPropertiesView, outputConsolePresenter);
-
-            //scan controls
-            ControlPanelView controlPanelView = new ControlPanelView(settingsManager.Settings);
-            ControlPanelPresenter controlPanelPresenter = new ControlPanelPresenter(controlPanelView, scanPropertiesView, outputConsolePresenter, portScanner);
+            ScanPropertiesPresenter scanPropertiesPresenter = new ScanPropertiesPresenter(scanPropertiesView, outputConsoleView);
 
             //scan results
             ScanResultsView scanResultsView = new ScanResultsView(settingsManager.Settings);
             ScanResultsPresenter scanResultsPresenter = new ScanResultsPresenter(portScanner, scanResultsView, settingsManager.Settings);
+
+            //scan controls
+            ControlPanelView controlPanelView = new ControlPanelView(settingsManager.Settings);
+            ControlPanelPresenter controlPanelPresenter = new ControlPanelPresenter(controlPanelView, scanPropertiesView, outputConsoleView, scanResultsView, portScanner);
 
             mainForm.AddViews(scanPropertiesView, outputConsoleView, controlPanelView, scanResultsView);
             Application.Run(mainForm);

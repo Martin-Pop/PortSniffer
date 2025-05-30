@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PortSniffer.Core.Interface
+namespace PortSniffer.View.Interface
 {
     public interface IConsoleLogger
     {

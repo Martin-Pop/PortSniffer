@@ -1,6 +1,5 @@
-﻿using PortSniffer.Core.Config;
-using PortSniffer.Core.Interface;
-using PortSniffer.Model;
+﻿using PortSniffer.Model.Config;
+using PortSniffer.Model.Scanner;
 using PortSniffer.View.Abstract;
 using System;
 using System.Collections.Generic;
@@ -21,6 +20,8 @@ namespace PortSniffer.View.ScanResults
 
         public ScanResultProperty(Settings settings, ScanResult results) : base(settings) 
         {
+            this.results = results;
+
             AutoSize = true;
             AutoSizeMode = AutoSizeMode.GrowAndShrink;
             Dock = DockStyle.Fill;
@@ -35,12 +36,14 @@ namespace PortSniffer.View.ScanResults
                 TextAlign = ContentAlignment.MiddleCenter,
             };
 
+            selectButton.Click += SelectButton_Click;
+
             ApplySettings();
 
             Controls.Add(selectButton);
         }
 
-        void SelectButton_Click(object sender, EventArgs e)
+        void SelectButton_Click(object? sender, EventArgs e)
         {
             ScanResultSelected?.Invoke(results);
         }

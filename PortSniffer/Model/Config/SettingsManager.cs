@@ -1,4 +1,4 @@
-﻿using PortSniffer.Core.Interface;
+﻿using PortSniffer.Model.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,17 +6,17 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace PortSniffer.Core.Config
+namespace PortSniffer.Model.Config
 {
     public class SettingsManager : ISettingsManager
     {
         private readonly string PATH;
         public Settings Settings { get; set; }
 
-        public SettingsManager(string filePath) 
-        {  
+        public SettingsManager(string filePath)
+        {
             PATH = filePath;
-            Settings = new Settings();        
+            Settings = new Settings();
         }
 
         public bool ReadSettings(out string message)
@@ -49,7 +49,7 @@ namespace PortSniffer.Core.Config
         {
             try
             {
-                string json = JsonSerializer.Serialize<Settings>(Settings, new JsonSerializerOptions { WriteIndented = true });
+                string json = JsonSerializer.Serialize(Settings, new JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText(PATH, json);
 
                 message = "Settings were successfully saved to file";
@@ -59,7 +59,7 @@ namespace PortSniffer.Core.Config
             {
                 message = "Error has occured while saving settings: " + ex.Message;
                 return false;
-            }     
+            }
         }
     }
 }
