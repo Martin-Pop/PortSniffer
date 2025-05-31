@@ -5,6 +5,7 @@ using PortSniffer.View.Interface;
 using PortSniffer.View.ScanResults;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,11 +21,12 @@ namespace PortSniffer.View.Sections
         private readonly TableLayoutPanel selectionPanel;
         private readonly RichTextBox resultsTextBox;
 
+        private readonly Label infoLabel;
+
         public ScanResultsView(Settings settings) : base(settings)
         {
             AutoSize = true;
             Dock = DockStyle.Fill;
-            //Padding = new Padding(5, 0, 0, 0);
 
             splitContainer = new SplitContainer
             {
@@ -36,7 +38,7 @@ namespace PortSniffer.View.Sections
             selectionPanel = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
-                BackColor = Color.LightGray,
+                
                 AutoSize = false,
                 AutoScroll = true,
                 ColumnCount = 1,
@@ -49,15 +51,37 @@ namespace PortSniffer.View.Sections
                 Dock = DockStyle.Fill,
                 ReadOnly = true,
                 BorderStyle = BorderStyle.None,
+                SelectionIndent = 10,
+                SelectionRightIndent = 10,
                 BackColor = Color.White,
                 ForeColor = Color.Black
             };
 
+            infoLabel = new Label
+            {
+                Text = "Scan results:",
+                Dock = DockStyle.Top,
+                
+                TextAlign = ContentAlignment.MiddleCenter,
+                ForeColor = ColorTranslator.FromHtml("#b6b3b5"),
+            };
+
+            ApplySettings();
+            ApplyDefautlText();
+
             resultsTextBox.KeyDown += HandleConsoleInput;
 
+           
             splitContainer.Panel1.Controls.Add(selectionPanel);
             splitContainer.Panel2.Controls.Add(resultsTextBox);
             Controls.Add(splitContainer);
+        }
+
+        private void ApplyDefautlText()
+        {
+            splitContainer.Panel1.Controls.Add(infoLabel);
+            resultsTextBox.Font = new Font(resultsTextBox.Font.FontFamily, resultsTextBox.Font.Size, FontStyle.Italic);
+            resultsTextBox.Text = "No results to view";
         }
 
         /// <summary>
@@ -77,6 +101,8 @@ namespace PortSniffer.View.Sections
         /// <param name="scanResultProperty"></param>
         public void AddScanResult(ScanResultProperty scanResultProperty)
         {
+            splitContainer.Panel1.Controls.Remove(infoLabel);
+            infoLabel.Enabled = false;
             selectionPanel.RowCount++;
             selectionPanel.Controls.Add(scanResultProperty);
         }
@@ -87,7 +113,15 @@ namespace PortSniffer.View.Sections
         public void ClearResults()
         {
             selectionPanel.Controls.Clear();
-            resultsTextBox.Clear();
+            selectionPanel.RowCount = 2;
+
+            //only way i managed to reset the scollbar
+            selectionPanel.AutoScroll = false;
+            selectionPanel.AutoScroll = true;
+
+            UpdateScanProgress(null);
+
+            ApplyDefautlText();
         }
 
         /// <summary>
@@ -96,7 +130,8 @@ namespace PortSniffer.View.Sections
         /// <param name="result">Result to show</param>
         public void ViewScanResult(ScanResult result)
         {
-            //TODO: nake this look better
+            resultsTextBox.Font = new Font(resultsTextBox.Font.FontFamily, resultsTextBox.Font.Size, FontStyle.Regular);
+
             resultsTextBox.Clear();
             resultsTextBox.AppendText($"Scan Result for {result.IPAddress}:\n");
             resultsTextBox.AppendText("Open Ports:\n");
@@ -112,6 +147,26 @@ namespace PortSniffer.View.Sections
         public override void ApplySettings()
         {
             resultsTextBox.Font = new Font(Settings.FontFamily, Settings.FontSize, FontStyle.Regular);
+            infoLabel.Font = new Font(Settings.FontFamily, Settings.FontSize, FontStyle.Italic);
+        }
+
+        public void UpdateScanProgress(ScanProgress? progress)
+        {
+            Form? form = FindForm();
+            if (form == null) return;
+
+            if (form.InvokeRequired)
+            {
+                form.Invoke(new Action(() =>
+                {
+                    form.Text = progress != null ? $"Port Sniffer - {progress}" : "Port Sniffer";
+
+                }));
+            }
+            else
+            {
+                form.Text = progress != null ? $"Port Sniffer - {progress}" : "Port Sniffer";
+            }
         }
     }
 }

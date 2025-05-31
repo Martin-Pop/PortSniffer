@@ -36,11 +36,6 @@ namespace PortSniffer.Presenter
             controlPanelView.PauseResume.Click += PauseResume_Click;
             controlPanelView.Clear.Click += Clear_Click;
 
-            //TODO: make the ui for this and handle it in diffrente presenter.
-            portScanner.OpenPortsFoundEvent += (result) =>
-            {
-                logger.Log($"Open ports found for {result.IPAddress}: {string.Join(", ", result.OpenPorts)}");
-            };
         }
 
 
@@ -120,19 +115,17 @@ namespace PortSniffer.Presenter
         /// <param name="e">Event arguments</param>
         private async void Start_Click(object? sender, EventArgs e)
         {
+            if (portScanner.ScanState == ScaningState.FINISHED || portScanner.ScanState == ScaningState.CANCELED)
+            {
+                scanResultsView.ClearResults();
+                portScanner.ScanState = ScaningState.IDLE; 
+            }
+
             if (portScanner.ScanState == ScaningState.IDLE)
             { 
                 if (CanStartScanning())
                 {
                     ScanConfiguration scanConfiguration = CreateScanConfiguration();
-
-                    Debug.WriteLine(scanConfiguration.Ports.Count);
-                    Debug.WriteLine(scanConfiguration.IPAddresses.Count);
-                    Debug.WriteLine(scanConfiguration.Timeout);
-                    Debug.WriteLine(scanConfiguration.MaxThreads);
-                    Debug.WriteLine("------");
-                    Debug.WriteLine(scanConfiguration.Ports.Count / scanConfiguration.Timeout / scanConfiguration.MaxThreads);
-                    Debug.WriteLine((long)scanConfiguration.Ports.Count * scanConfiguration.Timeout / scanConfiguration.MaxThreads * scanConfiguration.IPAddresses.Count);
 
                     var estimatedTime = TimeSpan.FromMilliseconds(
                         Math.Ceiling((double)scanConfiguration.Ports.Count / scanConfiguration.MaxThreads)
@@ -167,8 +160,7 @@ namespace PortSniffer.Presenter
                         logger.Log("Scanning was canceled by user");
                     }
 
-                    UpdateButtons(ScaningState.IDLE);
-                    portScanner.ScanState = ScaningState.IDLE;
+                    UpdateButtons(ScaningState.FINISHED);
                 }
             }
         }
@@ -213,9 +205,9 @@ namespace PortSniffer.Presenter
         /// <param name="e">Event arguments</param>
         private void Clear_Click(object? sender, EventArgs e)
         {
-            //TODO: make this x_x
-            logger.CLear();
             scanProperties.ClearAll();
+            logger.CLear();
+            scanResultsView.ClearResults();
             UpdateButtons(ScaningState.IDLE);
 
             portScanner.ScanState = ScaningState.IDLE;
@@ -235,7 +227,7 @@ namespace PortSniffer.Presenter
                 controlPanelView.PauseResume.Text = "Pause";
                 controlPanelView.Clear.Enabled = false;
             }
-            else if (state == ScaningState.IDLE)
+            else if (state == ScaningState.IDLE || state == ScaningState.FINISHED)
             {
                 controlPanelView.Start.Enabled = true;
                 controlPanelView.Stop.Enabled = false;

@@ -19,6 +19,10 @@ namespace PortSniffer.Model.Config
         public string BackgroundColor { get; set; } = "#ededed";
         public string InputErrorHighlightColor { get; set; } = "#787474";
 
+        public string LogColor { get; set; } = "#000000"; // Black
+        public string ErrorColor { get; set; } = "#ff0000"; // Red
+        public string WarnColor { get; set; } = "#ff8c00"; // Dark Orange
+
         public int DefautTimeout { get; set; } = 500;
         public int DefaultMaxThreads { get; set; } = 500;
     }

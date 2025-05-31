@@ -24,6 +24,7 @@ namespace PortSniffer.Presenter
             this.settings = settings;
 
             this.portScanner.OpenPortsFoundEvent += OnOpenPortsFoundEvent;
+            this.portScanner.ScanProgressEvent += OnScanProgressUpdate;
         }
 
         private void OnOpenPortsFoundEvent(ScanResult result)
@@ -39,6 +40,11 @@ namespace PortSniffer.Presenter
         private void ScanResultProperty_ScanResultSelected(ScanResult result)
         {
             scanResultsView.ViewScanResult(result);
+        }
+
+        private void OnScanProgressUpdate(ScanProgress progress)
+        {
+            scanResultsView.UpdateScanProgress(progress);
         }
     }
 }

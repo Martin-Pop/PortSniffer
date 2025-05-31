@@ -31,7 +31,11 @@ namespace PortSniffer.View.Sections
                 ReadOnly = true,
                 BorderStyle = BorderStyle.Fixed3D
             };
-            
+
+            LogColor = ColorTranslator.FromHtml(Settings.LogColor);
+            ErrorColor = ColorTranslator.FromHtml(Settings.ErrorColor);
+            WarnColor = ColorTranslator.FromHtml(Settings.WarnColor);
+
             console.KeyDown += HandleConsoleInput;
 
             ApplySettings();

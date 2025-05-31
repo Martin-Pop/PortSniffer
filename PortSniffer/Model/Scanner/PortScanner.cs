@@ -34,6 +34,7 @@ namespace PortSniffer.Model.Scanner
         public Settings Settings { get; internal set; }
 
         public event Action<ScanResult> OpenPortsFoundEvent;
+        public event Action<ScanProgress> ScanProgressEvent;
 
         public PortScanner()
         {
@@ -82,6 +83,11 @@ namespace PortSniffer.Model.Scanner
             var token = cancelationTS.Token;
             SemaphoreSlim semaphore = new SemaphoreSlim(scanConfiguration.MaxThreads);
 
+            long totalScans = scanConfiguration.IPAddresses.Count * scanConfiguration.Ports.Count;
+            long completedScans = 0;
+
+            int lastPercentage = 0;
+
             foreach (var ip in scanConfiguration.IPAddresses)
             {
                 List<int> openPorts = new List<int>();
@@ -103,12 +109,13 @@ namespace PortSniffer.Model.Scanner
                         try
                         {
                             bool isOpen = await ScanAsync(ip, port, scanConfiguration.Timeout, token);
-                            if (isOpen)
+                            lock (_lock)
                             {
-                                lock (_lock)
+                                if (isOpen)
                                 {
                                     openPorts.Add(port);
                                 }
+                                completedScans++;
                             }
                         }
                         finally
@@ -122,7 +129,15 @@ namespace PortSniffer.Model.Scanner
 
                 await Task.WhenAll(portTasks);
 
-                Debug.WriteLine("ALL TASK FINISHED");
+                double percentage = (double)completedScans / totalScans * 100;
+                
+                if (percentage > lastPercentage + 5 || openPorts.Count > 0)
+                {
+                    Debug.WriteLine("Updating progress");
+                    ScanProgressEvent?.Invoke(new ScanProgress(totalScans, completedScans, percentage));
+                    lastPercentage = (int)percentage;
+                }
+
                 if (openPorts.Count > 0)
                 {
                     ScanResult scanResult = new ScanResult(ip.ToString(), openPorts);
