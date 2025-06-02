@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace PortSniffer.Model.Scanner
 {
+    /// <summary>
+    /// Represents the progress of scanning.
+    /// </summary>
     public class ScanProgress
     {
         private long totalScans;

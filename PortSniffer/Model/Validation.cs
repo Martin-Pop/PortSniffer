@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace PortSniffer.Model
 {
+    /// <summary>
+    /// Validations logic for IP addresses, subnet masks, and ports.
+    /// </summary>
     public static class Validation
     {
         //IP

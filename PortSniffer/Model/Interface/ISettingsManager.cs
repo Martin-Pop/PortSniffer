@@ -7,10 +7,17 @@ using System.Threading.Tasks;
 
 namespace PortSniffer.Model.Interface
 {
+    /// <summary>
+    /// Interface for managing application settings.
+    /// </summary>
     public interface ISettingsManager
     {
+        /// <summary>
+        /// Current settings
+        /// </summary>
         Settings Settings { get; }
-        bool SaveSettings(out string message);
-        bool ReadSettings(out string message);
+
+        bool SaveSettings(out string message); //save settings
+        bool ReadSettings(out string message); //read settings
     }
 }

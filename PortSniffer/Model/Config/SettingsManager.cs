@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace PortSniffer.Model.Config
 {
+    /// <summary>
+    /// Manages the currect settings of the application, reading it and saving it to a file.
+    /// </summary>
     public class SettingsManager : ISettingsManager
     {
         private readonly string PATH;
@@ -19,6 +22,11 @@ namespace PortSniffer.Model.Config
             Settings = new Settings();
         }
 
+        /// <summary>
+        /// Reads the settings from a file and applies them to the Settings property.
+        /// </summary>
+        /// <param name="message">message whenever it was a success or nah + error msg</param>
+        /// <returns>True if setting was read and applied, otherwise false</returns>
         public bool ReadSettings(out string message)
         {
             try
@@ -45,6 +53,14 @@ namespace PortSniffer.Model.Config
             }
         }
 
+
+        //save settings is not used because i didnt make the settings form, configuration must be done from config file
+
+        /// <summary>
+        /// Saves current settings to a file.
+        /// </summary>
+        /// <param name="message">message whenever it was a success or nah + error msg</param>
+        /// <returns>True if setting was saved correctly, otherwise false</returns>
         public bool SaveSettings(out string message)
         {
             try

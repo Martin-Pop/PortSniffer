@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace PortSniffer.Core
 {
+    /// <summary>
+    /// Utility class for common functions used across the application.
+    /// </summary>
     public static class Utils
     {
         /// <summary>
@@ -17,4 +20,6 @@ namespace PortSniffer.Core
             return DateTime.Now.ToString("HH:mm:ss");
         }
     }
+
+    // i thought i will add more to this class but i didnt so now it seems useless :/
 }

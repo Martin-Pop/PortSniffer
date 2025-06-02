@@ -31,7 +31,6 @@ namespace PortSniffer
 
             //output console
             OutputConsoleView outputConsoleView = new OutputConsoleView(settingsManager.Settings);
-            //OutputConsolePresenter outputConsolePresenter = new OutputConsolePresenter(outputConsoleView);
 
             //scan properties
             ScanPropertiesView scanPropertiesView = new ScanPropertiesView(settingsManager.Settings);
@@ -46,14 +45,10 @@ namespace PortSniffer
             ControlPanelPresenter controlPanelPresenter = new ControlPanelPresenter(controlPanelView, scanPropertiesView, outputConsoleView, scanResultsView, portScanner);
 
             mainForm.AddViews(scanPropertiesView, outputConsoleView, controlPanelView, scanResultsView);
+
+            outputConsoleView.Log("Port Sniffer has successfully started. Welcome!");
             Application.Run(mainForm);
 
-            //TODO: make settings and new interface for reaplying settings? => settings form :weary: ?
-            // first load setings if scuccess apply them else apply default, then in console log result
-            
         }
-
-       
-
     }
 }

@@ -29,17 +29,13 @@ namespace PortSniffer.Model.Scanner
         private readonly ManualResetEvent pauseEvent = new ManualResetEvent(true);
         private readonly object _lock = new object();
 
-        private CancellationTokenSource cancelationTS;
+        private CancellationTokenSource? cancelationTS;
         public ScaningState ScanState { get; set; } = ScaningState.IDLE;
-        public Settings Settings { get; internal set; }
 
-        public event Action<ScanResult> OpenPortsFoundEvent;
-        public event Action<ScanProgress> ScanProgressEvent;
+        public event Action<ScanResult>? OpenPortsFoundEvent;
+        public event Action<ScanProgress>? ScanProgressEvent;
 
-        public PortScanner()
-        {
-
-        }
+        public PortScanner() { }
 
         /// <summary>
         /// Scans a single IP address and port asynchronously, if cancelation token is requested, scan will stop.
@@ -62,9 +58,6 @@ namespace PortSniffer.Model.Scanner
             }
             return false;
         }
-
-        //TODO: after everything is finished add option for a thing to first filter hosts by pinging if they are alive (might be usefull for quick scan)
-        //TODO: might add % of how much is done. => better UX when pausing/stoping 
 
         /// <summary>
         /// Starts scanning, scanning will be done in parallel using the specified number of threads in the scanConfiguration (maximum threads waiting for responce from TCP client or Timeout).
@@ -90,7 +83,7 @@ namespace PortSniffer.Model.Scanner
 
             foreach (var ip in scanConfiguration.IPAddresses)
             {
-                List<int> openPorts = new List<int>();
+                List<OpenPort> openPorts = new List<OpenPort>();
                 List<Task> portTasks = new List<Task>();
 
                 foreach (var port in scanConfiguration.Ports)
@@ -113,7 +106,7 @@ namespace PortSniffer.Model.Scanner
                             {
                                 if (isOpen)
                                 {
-                                    openPorts.Add(port);
+                                    openPorts.Add(new OpenPort(port, TimeOnly.FromDateTime(DateTime.Now)));
                                 }
                                 completedScans++;
                             }
@@ -130,22 +123,28 @@ namespace PortSniffer.Model.Scanner
                 await Task.WhenAll(portTasks);
 
                 double percentage = (double)completedScans / totalScans * 100;
-                
                 if (percentage > lastPercentage + 5 || openPorts.Count > 0)
                 {
-                    Debug.WriteLine("Updating progress");
                     ScanProgressEvent?.Invoke(new ScanProgress(totalScans, completedScans, percentage));
                     lastPercentage = (int)percentage;
                 }
 
                 if (openPorts.Count > 0)
                 {
-                    ScanResult scanResult = new ScanResult(ip.ToString(), openPorts);
+                    ScanResult scanResult = new ScanResult(
+                        ip.ToString(),
+                        openPorts,
+                        scanConfiguration.Ports.Min(),
+                        scanConfiguration.Ports.Max(),
+                        scanConfiguration.Ports.Count,
+                        DateOnly.FromDateTime(DateTime.Now)
+                        );
                     OpenPortsFoundEvent?.Invoke(scanResult);
                 }
             }
 
             ScanState = ScaningState.FINISHED;
+            ScanProgressEvent?.Invoke(new ScanProgress(totalScans, totalScans, 100));
         }
 
         /// <summary>

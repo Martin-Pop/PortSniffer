@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace PortSniffer.View.Properties
 {
+    /// <summary>
+    /// Property for predefined ports in the scan properties.
+    /// </summary>
     public class PredefinedPortsProperty : ScanPropertyCheckBoxAbstract
     {
         public int PredefinedPortsStart { get; private set; }
@@ -21,13 +24,13 @@ namespace PortSniffer.View.Properties
             Input.CheckedChanged += HandleInput;
         }
 
+        /// <summary>
+        /// Triggers the state changed event.
+        /// </summary>
+        /// <param name="sender">Source of the event</param>
+        /// <param name="e">event arguments</param>
         private void HandleInput(object? sender, EventArgs e)
         {
-            //if (Input.Checked)
-            //{
-            //    IsValid = true;
-            //}
-
             StateChangedEvent?.Invoke(this, EventArgs.Empty);
         }
     }

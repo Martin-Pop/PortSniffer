@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace PortSniffer.Model.Scanner
 {
+    /// <summary>
+    /// Represents the configuration for a port scanning.
+    /// </summary>
     public class ScanConfiguration
     {
         private readonly List<IPAddress> iPAddresses;
@@ -22,11 +25,8 @@ namespace PortSniffer.Model.Scanner
         }
 
         public List<IPAddress> IPAddresses => iPAddresses;
-
         public List<int> Ports => ports;
-
         public int Timeout => timeout;
-
         public int MaxThreads => maxThreads;
     }
 }

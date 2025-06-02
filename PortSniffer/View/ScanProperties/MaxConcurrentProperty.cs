@@ -3,6 +3,10 @@ using PortSniffer.View.Abstract;
 
 namespace PortSniffer.View.Controls
 {
+
+    /// <summary>
+    /// Property for setting the maximum number of concurrent threads for scanning.
+    /// </summary>
     public class MaxConcurrentProperty : ScanPropertyInputAbstract
     {
         public int MaxThreadCount { get; set; }
@@ -14,6 +18,9 @@ namespace PortSniffer.View.Controls
             Input.Text = MaxThreadCount.ToString();
         }
 
+        /// <summary>
+        /// Resets the property.
+        /// </summary>
         public override void Reset()
         {
             IsValid = true;

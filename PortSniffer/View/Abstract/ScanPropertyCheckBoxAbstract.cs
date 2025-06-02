@@ -9,13 +9,15 @@ using System.Threading.Tasks;
 
 namespace PortSniffer.View.Abstract
 {
+    /// <summary>
+    /// Abstract class for every scan property that is a checkbox.
+    /// </summary>
     public abstract class ScanPropertyCheckBoxAbstract : PanelAbstract
     {
         protected FlowLayoutPanel labelPanel;
         public Label Label { get; init; }
         public PropertyTooltip Tooltip { get; init; }
         public CheckBox Input { get; protected set; }
-        //public bool IsValid { get; set; }
         public ScanPropertyCheckBoxAbstract(string label, string toolTipMessage, Settings settings) : base(settings)
         {
             //this
@@ -52,21 +54,7 @@ namespace PortSniffer.View.Abstract
             ApplySettings();
 
             Controls.Add(labelPanel);
-
-            //IsValid = false;
-            //Input.CheckedChanged += HandleInput;
-
         }
-
-        //private void HandleInput(object? sender, EventArgs e)
-        //{
-        //    if (Input.Checked)
-        //    {
-        //        IsValid = true;
-        //    }
-
-        //    StateChangedEvent?.Invoke(this, EventArgs.Empty);
-        //}
 
         public override void ApplySettings()
         {

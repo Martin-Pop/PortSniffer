@@ -11,6 +11,9 @@ using System.Windows.Forms;
 
 namespace PortSniffer.View.ScanProperties
 {
+    /// <summary>
+    /// Represents IP address property for scan input.
+    /// </summary>
     public class IPAddressProperty : ScanPropertyInputAbstract
     {
         public IPAddress IpAddress { get; set; } = IPAddress.None;
@@ -19,6 +22,9 @@ namespace PortSniffer.View.ScanProperties
         {
         }
 
+        /// <summary>
+        /// Resets the property
+        /// </summary>
         public override void Reset()
         {
             IsValid = false;

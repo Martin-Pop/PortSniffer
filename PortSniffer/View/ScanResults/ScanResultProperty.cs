@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace PortSniffer.View.ScanResults
 {
     /// <summary>
-    /// Represents the UI for each scan result as a 'button' that will show all the ports
+    /// Represents the UI for each scan result as a 'button' that will show more information about the scan result.
     /// </summary>
     public class ScanResultProperty : PanelAbstract
     {
@@ -43,6 +43,11 @@ namespace PortSniffer.View.ScanResults
             Controls.Add(selectButton);
         }
 
+        /// <summary>
+        /// Invokes the ScanResultSelected event when the button is clicked, passing the scan result.
+        /// </summary>
+        /// <param name="sender">Source of the event</param>
+        /// <param name="e">event argumants</param>
         void SelectButton_Click(object? sender, EventArgs e)
         {
             ScanResultSelected?.Invoke(results);

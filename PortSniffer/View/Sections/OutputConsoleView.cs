@@ -57,12 +57,12 @@ namespace PortSniffer.View.Sections
                 return;
             }
 
-            console.AppendText("\n>> ");
+            console.AppendText(">> ");
             console.SelectionStart = console.TextLength;
             console.SelectionLength = 0;
 
             console.SelectionColor = color;
-            console.AppendText(msg);
+            console.AppendText(msg + "\n");
             console.SelectionColor = console.ForeColor;
 
             //hoefully fixes crash if user minimeses the window at before the invoke :pray:
@@ -91,6 +91,8 @@ namespace PortSniffer.View.Sections
             console.Font = new Font(Settings.FontFamily, Settings.FontSize, FontStyle.Regular);
             console.BackColor = ColorTranslator.FromHtml(Settings.ConsoleBackgroundColor);
         }
+
+        //self explanatory methods:
 
         public void Warn(string msg)
         {

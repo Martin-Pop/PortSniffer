@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace PortSniffer.View.Controls
 {
+    /// <summary>
+    /// Property for specifying a port number.
+    /// </summary>
     public class PortProperty : ScanPropertyInputAbstract
     {
         public int Port { get; set; } = 0;
@@ -16,6 +19,9 @@ namespace PortSniffer.View.Controls
         {
         }
 
+        /// <summary>
+        /// Resets the property.
+        /// </summary>
         public override void Reset()
         {
             IsValid = false;

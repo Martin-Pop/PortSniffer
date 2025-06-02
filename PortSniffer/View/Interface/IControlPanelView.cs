@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace PortSniffer.View.Interface
 {
+    /// <summary>
+    /// Interface for constol panel view.
+    /// </summary>
     public interface IControlPanelView
     {
         public Button Start { get; }

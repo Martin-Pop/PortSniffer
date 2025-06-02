@@ -8,6 +8,9 @@ using PortSniffer.View.ScanProperties;
 
 namespace PortSniffer.View.Sections
 {
+    /// <summary>
+    /// Class for the scan properties view, which contains all the input fields for configuring a scan.
+    /// </summary>
     public class ScanPropertiesView : PanelAbstract, IScanProperties
     {
         private TableLayoutPanel scanProperties;
@@ -35,7 +38,8 @@ namespace PortSniffer.View.Sections
                 AutoScroll = true,
                 ColumnCount = 1,
                 RowCount = 20,
-                Padding = new Padding(0, 0, 1, 0) //supresses horizontal scrollbar!!!! //inspired by this answer => https://stackoverflow.com/a/6555682
+                Padding = new Padding(0, 0, 1, 0) //supresses horizontal scrollbar (kind of) (sometimes it doesnt) //inspired by this answer => https://stackoverflow.com/a/6555682 (i dont know why it works, makes no sence)
+                //'HorizontalScroll.Enabled = false' doesnt apply when autoScroll is enabled
             };
 
             InitializeControls();
@@ -43,6 +47,9 @@ namespace PortSniffer.View.Sections
             Controls.Add(scanProperties);
         }
 
+        /// <summary>
+        /// Creates all properties and adds them to the scanProperties panel.
+        /// </summary>
         public void InitializeControls()
         {
             //TARGET IP

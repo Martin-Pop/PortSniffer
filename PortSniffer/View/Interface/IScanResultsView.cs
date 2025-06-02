@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace PortSniffer.View.Interface
 {
+    /// <summary>
+    /// Interface for scan results view.
+    /// </summary>
     public interface IScanResultsView
     {
         void AddScanResult(ScanResultProperty scanResultProperty);

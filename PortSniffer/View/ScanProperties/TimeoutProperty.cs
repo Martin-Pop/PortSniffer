@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace PortSniffer.View.Controls
 {
+    /// <summary>
+    /// Property for setting a timeout value in the scan properties.
+    /// </summary>
     public class TimeoutProperty : ScanPropertyInputAbstract
     {
         public int Timeout { get; set; }
@@ -19,6 +22,9 @@ namespace PortSniffer.View.Controls
             Input.Text = Timeout.ToString();
         }
 
+        /// <summary>
+        /// Resets the property.
+        /// </summary>
         public override void Reset()
         {
             IsValid = true;

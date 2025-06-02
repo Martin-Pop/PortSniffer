@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace PortSniffer.View.Abstract
 {
+    /// <summary>
+    /// Abstract class for scan property inputs.
+    /// </summary>
     public abstract class ScanPropertyInputAbstract : PanelAbstract
     {
         protected FlowLayoutPanel labelPanel;
@@ -74,6 +77,11 @@ namespace PortSniffer.View.Abstract
             Input.GotFocus += (_, _) => Input.BackColor = Color.White;
         }
 
+        /// <summary>
+        /// Checks if key is input if it is Enter key, it will trigger the validation event and lose focus.
+        /// </summary>
+        /// <param name="sender">Source of the evnent</param>
+        /// <param name="e">Event arguments</param>
         private void Control_KeyDown(object? sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)

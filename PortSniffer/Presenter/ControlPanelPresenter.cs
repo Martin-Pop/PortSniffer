@@ -17,8 +17,7 @@ namespace PortSniffer.Presenter
         private readonly IScanProperties scanProperties;
         private readonly IConsoleLogger logger;
         private readonly IScanResultsView scanResultsView;
-
-        private readonly PortScanner portScanner = new PortScanner();
+        private readonly PortScanner portScanner;
         public ScaningState scanState {  get; private set; }
 
         public ControlPanelPresenter(IControlPanelView controlPanelView, IScanProperties scanProperties, IConsoleLogger logger,IScanResultsView scanResultsView, PortScanner portScanner)
@@ -27,7 +26,6 @@ namespace PortSniffer.Presenter
             this.scanProperties = scanProperties;
             this.logger = logger;
             this.scanResultsView = scanResultsView;
-
             this.portScanner = portScanner;
 
             // events
@@ -35,9 +33,7 @@ namespace PortSniffer.Presenter
             controlPanelView.Stop.Click += Stop_Click;
             controlPanelView.PauseResume.Click += PauseResume_Click;
             controlPanelView.Clear.Click += Clear_Click;
-
         }
-
 
         /// <summary>
         /// Creates a scan configuration based on the properties set in the scanProperties object, should be called only if required properties are valid.
@@ -78,6 +74,13 @@ namespace PortSniffer.Presenter
             {
                 ports = new List<int> { scanProperties.PortRangeStart.Port };
             }
+
+            //resets to default if it was invalid
+            if (!scanProperties.SubnetMask.IsValid) scanProperties.SubnetMask.Reset();
+            if (!scanProperties.PortRangeEnd.IsValid) scanProperties.PortRangeEnd.Reset();
+            if (!scanProperties.TargetIPRangeEnd.IsValid) scanProperties.TargetIPRangeEnd.Reset();
+            if (!scanProperties.Timeout.IsValid) scanProperties.Timeout.Reset();
+            if (!scanProperties.MaximumConcurrentScans.IsValid) scanProperties.MaximumConcurrentScans.Reset();
 
             ScanConfiguration scanConfig = new ScanConfiguration(
                 ips,
@@ -127,8 +130,12 @@ namespace PortSniffer.Presenter
                 {
                     ScanConfiguration scanConfiguration = CreateScanConfiguration();
 
+                    //fixes overflow
+                    int threadDivision = scanConfiguration.MaxThreads % scanConfiguration.Ports.Count;
+                    if (threadDivision == 0) threadDivision = 1;
+
                     var estimatedTime = TimeSpan.FromMilliseconds(
-                        Math.Ceiling((double)scanConfiguration.Ports.Count / scanConfiguration.MaxThreads)
+                        Math.Ceiling((double)scanConfiguration.Ports.Count / threadDivision)
                         * scanConfiguration.Timeout
                         * scanConfiguration.IPAddresses.Count
                     );

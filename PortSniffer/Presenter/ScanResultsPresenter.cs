@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 
 namespace PortSniffer.Presenter
 {
+    /// <summary>
+    /// Manages the interaction between the port scanner and the scan results view.
+    /// </summary>
     public class ScanResultsPresenter
     {
         private readonly PortScanner portScanner;

@@ -46,11 +46,29 @@ namespace PortSniffer.Model.Interface
         /// </summary>
         TimeoutProperty Timeout { get; }
 
+        /// <summary>
+        /// Option for only well-known ports.
+        /// </summary>
         PredefinedPortsProperty OnlyWellKnownPorts { get; }
+
+        /// <summary>
+        /// Option for only registered ports.
+        /// </summary>
         PredefinedPortsProperty OnlyRegisteredPorts { get; }
+
+        /// <summary>
+        /// Option for only private ports.
+        /// </summary>
         PredefinedPortsProperty OnlyPrivatePorts { get; }
+
+        /// <summary>
+        /// Option for all ports.
+        /// </summary>
         PredefinedPortsProperty AllPorts { get; }
 
+        /// <summary>
+        /// Clears all scan properties to their default values.
+        /// </summary>
         void ClearAll();
     }
 }

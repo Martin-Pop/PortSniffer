@@ -7,6 +7,9 @@ using System.Net;
 
 namespace PortSniffer.Presenter
 {
+    /// <summary>
+    /// Manages the interaction between the scan properties and the view, outputs messages into console to give user know whats happening.
+    /// </summary>
     public class ScanPropertiesPresenter
     {
         private readonly IScanProperties scanProperties;
@@ -82,10 +85,9 @@ namespace PortSniffer.Presenter
             {
                 logger.Error($"Port range-end \"{scanProperties.PortRangeEnd.Input.Text}\" must be a number within the range of 1 - 65535");
             }
-            //TODO FIX THIS + make new method for 'valid' option
+            //TODO FIX THIS + make new method for 'valid' option  -- i dont know what i meant by this, maybe in the future ill know.
             scanProperties.PortRangeEnd.Error();
         }
-
 
         /// <summary>
         /// Handler for the target IP validation event.

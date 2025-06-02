@@ -133,12 +133,8 @@ namespace PortSniffer.View.Sections
             resultsTextBox.Font = new Font(resultsTextBox.Font.FontFamily, resultsTextBox.Font.Size, FontStyle.Regular);
 
             resultsTextBox.Clear();
-            resultsTextBox.AppendText($"Scan Result for {result.IPAddress}:\n");
-            resultsTextBox.AppendText("Open Ports:\n");
-            foreach (var port in result.OpenPorts)
-            {
-                resultsTextBox.AppendText($"Port {port} is open.\n");
-            }
+            resultsTextBox.AppendText(result.ToString());
+            
         }
 
         /// <summary>
@@ -150,6 +146,10 @@ namespace PortSniffer.View.Sections
             infoLabel.Font = new Font(Settings.FontFamily, Settings.FontSize, FontStyle.Italic);
         }
 
+        /// <summary>
+        /// Updates the scan progress in the form title.
+        /// </summary>
+        /// <param name="progress">Progress to set</param>
         public void UpdateScanProgress(ScanProgress? progress)
         {
             Form? form = FindForm();
