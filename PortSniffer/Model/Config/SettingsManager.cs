@@ -37,10 +37,10 @@ namespace PortSniffer.Model.Config
                 if (s != null)
                 {
                     Settings = s;
-                    message = "Successfully loaded settings from file.";
+                    message = "\"Successfully read config file. Correctly written entries were used.";
                     return true;
                 }
-                else
+                else // if file is null or isnt object {} 
                 {
                     message = "Failed to deserialize settings. Default settings were applied.";
                     return false;
@@ -48,11 +48,10 @@ namespace PortSniffer.Model.Config
             }
             catch (Exception ex)
             {
-                message = "Error has occured while reading the settings, default settings were applied: " + ex.Message;
+                message = "Error has occured while reading the settings, default settings were applied: ERROR MESSAGE:[ "+ ex.Message +" ]";
                 return false;
             }
         }
-
 
         //save settings is not used because i didnt make the settings form, configuration must be done from config file
 

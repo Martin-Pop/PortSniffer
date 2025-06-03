@@ -78,7 +78,9 @@ namespace PortSniffer.View.Sections
         /// <param name="sender">Source of the event</param>
         /// <param name="e">Event arguments</param>
         private void HandleConsoleInput(object? sender, KeyEventArgs e)
-        {   
+        {
+            if (e.Control && e.KeyCode == Keys.C) return;
+
             e.SuppressKeyPress = true;
             e.Handled = true;
         }

@@ -1,7 +1,6 @@
 using PortSniffer.Model.Config;
 using PortSniffer.Model.Scanner;
 using PortSniffer.Presenter;
-//using PortSniffer.UI;
 using PortSniffer.View;
 using PortSniffer.View.Sections;
 using System.Diagnostics;
@@ -21,7 +20,9 @@ namespace PortSniffer
             
             //settings
             SettingsManager settingsManager = new SettingsManager(Path.Combine(Application.StartupPath, "config.json"));
-            settingsManager.SaveSettings(out string message);
+            bool success = settingsManager.ReadSettings(out string message);
+            //settingsManager.SaveSettings(out string message11);
+
 
             //port scanner
             PortScanner portScanner = new PortScanner();
@@ -46,9 +47,17 @@ namespace PortSniffer
 
             mainForm.AddViews(scanPropertiesView, outputConsoleView, controlPanelView, scanResultsView);
 
+            if (success)
+            {
+                outputConsoleView.Log(message);
+            }
+            else
+            {
+                outputConsoleView.Warn(message);
+            }
+
             outputConsoleView.Log("Port Sniffer has successfully started. Welcome!");
             Application.Run(mainForm);
-
         }
     }
 }
