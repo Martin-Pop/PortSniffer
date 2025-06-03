@@ -109,7 +109,7 @@ namespace PortSniffer.View.Abstract
         public void Error()
         {
             IsValid = false;
-            Input.BackColor = Color.LightCoral;
+            Input.BackColor = ColorTranslator.FromHtml(Settings.InputErrorHighlightColor);
         }
 
         /// <summary>
