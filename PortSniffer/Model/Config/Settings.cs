@@ -17,8 +17,13 @@ namespace PortSniffer.Model.Config
         [JsonPropertyName("font_family")]
         public string FontFamily { get; set; } = "Consolas";
 
+        private float fontSize = 11f;
         [JsonPropertyName("font_size")]
-        public float FontSize { get; set; } = 11f;
+        public float FontSize
+        {
+            get => fontSize;
+            set { if (value > 0 && value < 100) fontSize = value; }
+        }
 
         private string consoleBackgroundColor = "#fafafa";
         [JsonPropertyName("console_background_color")]
@@ -60,11 +65,21 @@ namespace PortSniffer.Model.Config
             set { if (IsValidHexColor(value)) warnColor = value; }
         }
 
+        private int defaultTimeout = 500;
         [JsonPropertyName("default_timeout")]
-        public int DefautTimeout { get; set; } = 500;
+        public int DefautTimeout
+        {
+            get => defaultTimeout;
+            set { if (value > 0) defaultTimeout = value; }
+        }
 
+        private int defautlMaxThreads = 500;
         [JsonPropertyName("default_max_threads")]
-        public int DefaultMaxThreads { get; set; } = 500;
+        public int DefaultMaxThreads
+        {
+            get => defautlMaxThreads;
+            set { if (value > 0) defautlMaxThreads = value; }
+        }
 
         private bool IsValidHexColor(string? value)
         {
