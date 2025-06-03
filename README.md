@@ -34,8 +34,7 @@ UI is resizable 👍.
 - **Console output:**
   - Displays all events and validation messages
   - Example: IP/port input confirmation, errors, scan started/stopped, etc.
-  - Approximate scan duration.
-  - Scan progress. 
+  - Approximate scan duration
 
 - **Scan results panel:**
   - Displays all IP addresses where open ports were detected
@@ -43,13 +42,16 @@ UI is resizable 👍.
 
 - **Config file support:**
   - Allows setting default timeout, thread count, and some UI elements (font, font-size, error color)
-
+  
+- **Other features:**
+  - UI is resizable
+  - Scan progress
+  - Scan results export to json
 ---
 
 ## ⚠️ Limitations
 
 - The scanner processes IP addresses one by one — scanning waits for one IP to finish before moving to the next. This may cause unnecessary delays for small scans across many IPs.
 - Not yet fully optimized for high-speed scanning.
-- App doesn't contain export.
 
 ---
