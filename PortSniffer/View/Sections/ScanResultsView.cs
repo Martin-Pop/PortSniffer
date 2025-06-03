@@ -84,12 +84,33 @@ namespace PortSniffer.View.Sections
             Controls.Add(splitContainer);
         }
 
+        /// <summary>
+        /// Resets the look.
+        /// </summary>
         private void ApplyDefautlText()
         {
             splitContainer.Panel1.Controls.Add(infoLabel);
             splitContainer.Panel1.Controls.Remove(ExportButton);
             resultsTextBox.Font = new Font(resultsTextBox.Font.FontFamily, resultsTextBox.Font.Size, FontStyle.Italic);
             resultsTextBox.Text = "No results to view";
+        }
+
+        /// <summary>
+        /// Gets the scan results from the selection panel.
+        /// </summary>
+        /// <returns>List of results</returns>
+        public List<ScanResult> GetScanResults()
+        {
+            List<ScanResult> results = new List<ScanResult>();
+            foreach (Control control in selectionPanel.Controls)
+            {
+                if (control is ScanResultProperty scanResultProperty)
+                {
+                    results.Add(scanResultProperty.Results);
+                }
+            }
+
+            return results;
         }
 
         /// <summary>

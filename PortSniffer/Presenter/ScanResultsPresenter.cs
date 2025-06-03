@@ -22,9 +22,6 @@ namespace PortSniffer.Presenter
         private readonly IConsoleLogger logger;
         private readonly Settings settings;
 
-        //this should be in model..
-        private List<ScanResult> scanResults = new List<ScanResult>();
-
         public ScanResultsPresenter(PortScanner portScanner, IScanResultsView scanResultsView, IConsoleLogger logger ,Settings settings)
         {
             this.portScanner = portScanner;
@@ -51,7 +48,7 @@ namespace PortSniffer.Presenter
                 {
                     try
                     {
-                        string json = JsonSerializer.Serialize(scanResults, new JsonSerializerOptions { WriteIndented = true });
+                        string json = JsonSerializer.Serialize(scanResultsView.GetScanResults(), new JsonSerializerOptions { WriteIndented = true });
                         File.WriteAllText(saveDialog.FileName, json);
                         logger.Log("Scan results saved successfully!");
                     }
@@ -69,7 +66,6 @@ namespace PortSniffer.Presenter
         /// <param name="result"></param>
         private void OnOpenPortsFoundEvent(ScanResult result)
         {
-            scanResults.Add(result);
             ScanResultProperty scanResultProperty = new ScanResultProperty(settings, result);
             scanResultProperty.ScanResultSelected += ScanResultProperty_ScanResultSelected;
 

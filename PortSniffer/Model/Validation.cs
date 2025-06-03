@@ -70,8 +70,6 @@ namespace PortSniffer.Model
             uint s = IpToUint32(start);
             uint e = IpToUint32(end);
 
-            Debug.WriteLine(e - s);
-
             for (uint i = s; i <= e; i++)
             {
                 addresses.Add(Uint32ToIp(i));

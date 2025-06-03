@@ -130,16 +130,9 @@ namespace PortSniffer.Presenter
                 {
                     ScanConfiguration scanConfiguration = CreateScanConfiguration();
 
-                    //fixes overflow
-                    int threadDivision = scanConfiguration.MaxThreads % scanConfiguration.Ports.Count;
-                    if (threadDivision == 0) threadDivision = 1;
-
-                    var estimatedTime = TimeSpan.FromMilliseconds(
-                        Math.Ceiling((double)scanConfiguration.Ports.Count / threadDivision)
-                        * scanConfiguration.Timeout
-                        * scanConfiguration.IPAddresses.Count
-                    );
-
+                    double batch = Math.Ceiling((double)scanConfiguration.Ports.Count / scanConfiguration.MaxThreads);
+                    var estimatedTime = TimeSpan.FromMilliseconds(batch  * scanConfiguration.Timeout * scanConfiguration.IPAddresses.Count);
+                        
                     if (estimatedTime.TotalHours > 1)
                     {
                         logger.Warn("The estimated scan time is over an hour. To speed it up, try increasing the 'Max Concurrent Scans' value or lowering the 'Timeout' setting.");

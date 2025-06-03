@@ -18,6 +18,8 @@ namespace PortSniffer.View.ScanResults
         private readonly Button selectButton;
         public event Action<ScanResult> ScanResultSelected;
 
+        public ScanResult Results => results;
+
         public ScanResultProperty(Settings settings, ScanResult results) : base(settings) 
         {
             this.results = results;
