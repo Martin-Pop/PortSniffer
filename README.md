@@ -1,4 +1,4 @@
-# 🛠️ Port Sniffer (Windows Forms, C#)
+# 👃 Port Sniffer (Windows Forms, C#)
 
 A **port sniffer** application built with **C#** and **Windows Forms**.
 It allows you to scan ports on specified IP addresses with configurable ranges, timeouts, and threading.
@@ -6,7 +6,7 @@ UI is resizable 👍.
 
 ---
 
-## 🧩 Features
+## 📃 Features
 
 - **Flexible IP input:**
   - Single IP address (192.168.1.1)
@@ -47,6 +47,15 @@ UI is resizable 👍.
   - UI is resizable
   - Scan progress
   - Scan results export to json
+
+---
+
+## 🔧 Download and configuraton
+
+  - Download latest release
+  - Run the PortSniffer.exe file (required .NET Runtime)
+  - Configuration can be done in config.json file (must be in the same directory as .exe file)
+
 ---
 
 ## ⚠️ Limitations
