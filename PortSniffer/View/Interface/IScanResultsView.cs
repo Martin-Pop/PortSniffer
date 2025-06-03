@@ -16,6 +16,7 @@ namespace PortSniffer.View.Interface
         void AddScanResult(ScanResultProperty scanResultProperty);
         void ViewScanResult(ScanResult result);
         void UpdateScanProgress(ScanProgress progress);
+        public Button ExportButton { get; }
         void ClearResults();
     }
 }

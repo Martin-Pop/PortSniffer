@@ -11,18 +11,18 @@ namespace PortSniffer.Model.Scanner
     /// </summary>
     public class OpenPort
     {
-        private int portNumber;
-        private TimeOnly scannedAt;
+        public int PortNumber { get; private set; }
+        public TimeOnly ScannedAt { get; private set; }
 
         public OpenPort(int portNumber, TimeOnly scannedAt)
         {
-            this.portNumber = portNumber;
-            this.scannedAt = scannedAt;
+            PortNumber = portNumber;
+            ScannedAt = scannedAt;
         }
 
         public override string? ToString()
         {
-            return $"{portNumber} -- ({scannedAt.ToString("HH:mm:ss")})";
+            return $"{PortNumber} -- ({ScannedAt.ToString("HH:mm:ss")})";
         }
     }
 }

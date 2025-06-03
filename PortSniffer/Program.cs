@@ -39,7 +39,7 @@ namespace PortSniffer
 
             //scan results
             ScanResultsView scanResultsView = new ScanResultsView(settingsManager.Settings);
-            ScanResultsPresenter scanResultsPresenter = new ScanResultsPresenter(portScanner, scanResultsView, settingsManager.Settings);
+            ScanResultsPresenter scanResultsPresenter = new ScanResultsPresenter(portScanner, scanResultsView, outputConsoleView ,settingsManager.Settings);
 
             //scan controls
             ControlPanelView controlPanelView = new ControlPanelView(settingsManager.Settings);

@@ -23,6 +23,8 @@ namespace PortSniffer.View.Sections
 
         private readonly Label infoLabel;
 
+        public Button ExportButton { get; private set; }
+
         public ScanResultsView(Settings settings) : base(settings)
         {
             AutoSize = true;
@@ -66,12 +68,17 @@ namespace PortSniffer.View.Sections
                 ForeColor = ColorTranslator.FromHtml("#b6b3b5"),
             };
 
+            ExportButton = new Button
+            {
+                Text = "Export",
+                Dock = DockStyle.Bottom,
+            };
+
             ApplySettings();
             ApplyDefautlText();
 
             resultsTextBox.KeyDown += HandleConsoleInput;
 
-           
             splitContainer.Panel1.Controls.Add(selectionPanel);
             splitContainer.Panel2.Controls.Add(resultsTextBox);
             Controls.Add(splitContainer);
@@ -80,6 +87,7 @@ namespace PortSniffer.View.Sections
         private void ApplyDefautlText()
         {
             splitContainer.Panel1.Controls.Add(infoLabel);
+            splitContainer.Panel1.Controls.Remove(ExportButton);
             resultsTextBox.Font = new Font(resultsTextBox.Font.FontFamily, resultsTextBox.Font.Size, FontStyle.Italic);
             resultsTextBox.Text = "No results to view";
         }
@@ -104,6 +112,7 @@ namespace PortSniffer.View.Sections
         public void AddScanResult(ScanResultProperty scanResultProperty)
         {
             splitContainer.Panel1.Controls.Remove(infoLabel);
+            splitContainer.Panel1.Controls.Add(ExportButton);
             infoLabel.Enabled = false;
             selectionPanel.RowCount++;
             selectionPanel.Controls.Add(scanResultProperty);
